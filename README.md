@@ -24,9 +24,12 @@ A interação é coordenada por etapas: o ônibus só abre a porta depois que os
 
 Requer Python 3.11 e conexão com a internet na primeira instalação.
 
-1. Baixe o repositório do portfólio pelo GitHub (**Code > Download ZIP**) ou clone o portfólio.
-2. Entre na pasta `projetos/computacao-grafica-caracol-onibus`.
-3. Execute `INICIAR.bat`.
+1. Baixe este repositório pelo GitHub (**Code > Download ZIP**) ou clone o projeto:
+   ```bash
+   git clone https://github.com/vinicius589/computacao-grafica-caracol-onibus.git
+   cd computacao-grafica-caracol-onibus
+   ```
+2. Execute `INICIAR.bat` na pasta do projeto.
 
 O BAT cria um ambiente virtual, instala as dependências, prepara o framework Py3D e inicia a cena. Caso uma etapa falhe, ele interrompe a execução e mostra a mensagem correspondente.
 
