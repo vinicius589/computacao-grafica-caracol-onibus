@@ -4,9 +4,9 @@ Este guia explica o projeto em linguagem simples. Para apresentar, comece pelo f
 
 ## 1. Como executar
 
-Abra a pasta completa no PyCharm, selecione um interpretador Python já instalado (de 3.6 a 3.15), abra `main.py` e clique em **Run**.
+Abra a pasta completa no PyCharm, selecione um interpretador Python já instalado (de 3.10 a 3.14), abra `main.py` e clique em **Run**.
 
-Antes de abrir a janela, o próprio arquivo identifica a versão do Python e verifica se Pygame, PyOpenGL e NumPy podem ser importados. Caso falte alguma biblioteca, ele instala versões compatíveis usando o mesmo interpretador do PyCharm. Em Python 3.14 e 3.15, utiliza Pygame Community Edition, cujo módulo continua sendo importado como `pygame`. A pasta `py3d` já está incluída no projeto.
+Antes de abrir a janela, o próprio arquivo identifica a versão do Python e verifica se Pygame, PyOpenGL e NumPy podem ser importados. Caso falte alguma biblioteca, ele instala versões compatíveis usando o mesmo interpretador do PyCharm. Em Python 3.14, utiliza Pygame Community Edition, cujo módulo continua sendo importado como `pygame`. A pasta `py3d` já está incluída no projeto.
 
 ## 2. Como o código está dividido
 
@@ -37,7 +37,7 @@ A cada quadro, o código monta novamente a matriz de posição e rotação de ca
 
 ## 5. Como o caracol fica visível
 
-O piso fica na parte inferior do ônibus. A entrada lateral permanece aberta quando as duas folhas giram para fora, e a rampa liga o chão ao piso interno. A abertura central do teto também permite observar o personagem.
+O piso fica na parte inferior do ônibus. A entrada lateral permanece aberta quando as duas folhas giram para fora. A rampa metálica liga o chão ao piso interno e possui três faixas transversais de apoio. A abertura central do teto também permite observar o personagem.
 
 O banco, a placa e as árvores ficam atrás do percurso, para não cobrir o caracol na visão inicial da câmera. Depois de embarcar, o caracol fica ligeiramente deslocado para o lado da abertura, sem sair da cabine.
 
