@@ -2,6 +2,17 @@
 
 Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python com Pygame, PyOpenGL e NumPy, usando o framework Py3D incluído neste repositório.
 
+## Identificação da dupla
+
+- **Vinícius da Mota Campos** — RA: **241-007-660**
+- **Miguel Felipe Viana** — RA: **241-006-978**
+
+**Temas representados:** Caracol robótico e ônibus de brinquedo.
+
+## Contribuições individuais
+
+Descrever nesta seção a contribuição efetiva de cada integrante para o desenvolvimento, a implementação, os testes e a apresentação do projeto. Essa divisão deve ser conferida e preenchida pela dupla, sem atribuir tarefas que não foram realizadas.
+
 ## Cena
 
 A cena mostra um ponto de ônibus com calçada, cobertura, banco e placa posicionados fora do caminho do personagem. O ônibus amarelo tem carroceria, janelas, rodas, para-choques e duas folhas articuladas na entrada.
