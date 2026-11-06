@@ -93,7 +93,7 @@ from animacao import SequenciaAnimacao
 PASTA_ASSETS = PASTA_PROJETO / "assets"
 
 # O caracol fica visivel dentro da cabine, sem ultrapassar a carroceria.
-ESCALA_CARACOL = 0.62
+ESCALA_CARACOL = 0.64
 
 # Posicoes fixas do onibus na cena.
 ONIBUS_X = SequenciaAnimacao.ONIBUS_X
@@ -320,29 +320,29 @@ class TrabalhoComputacaoGrafica(Base):
         # Como os grupos sao filhos do onibus, acompanham a carroceria sem
         # recalcular posicoes globais a cada quadro.
         self.porta_esquerda = Group()
-        self.porta_esquerda.set_position([1.04, 1.72, -0.90])
+        self.porta_esquerda.set_position([1.04, 1.72, -0.82])
         self.onibus.add(self.porta_esquerda)
 
         self.adicionar_peca(
-            self.porta_esquerda, BoxGeometry(0.06, 1.48, 0.90),
+            self.porta_esquerda, BoxGeometry(0.06, 1.48, 0.82),
             self.material_azul, [0, 0, 0.45]
         )
         self.adicionar_peca(
             self.porta_esquerda, BoxGeometry(0.035, 0.20, 0.035),
-            self.material_metal, [0.045, 0, 0.80]
+            self.material_metal, [0.045, 0, 0.72]
         )
 
         self.porta_direita = Group()
-        self.porta_direita.set_position([1.04, 1.72, 0.90])
+        self.porta_direita.set_position([1.04, 1.72, 0.82])
         self.onibus.add(self.porta_direita)
 
         self.adicionar_peca(
-            self.porta_direita, BoxGeometry(0.06, 1.48, 0.90),
+            self.porta_direita, BoxGeometry(0.06, 1.48, 0.82),
             self.material_azul, [0, 0, -0.45]
         )
         self.adicionar_peca(
             self.porta_direita, BoxGeometry(0.035, 0.20, 0.035),
-            self.material_metal, [0.045, 0, -0.80]
+            self.material_metal, [0.045, 0, -0.72]
         )
 
         # Teto com duas partes: reforca o formato do onibus, mas deixa
@@ -364,6 +364,13 @@ class TrabalhoComputacaoGrafica(Base):
                 self.onibus, BoxGeometry(1.72, 0.14, 0.92),
                 self.material_amarelo, [0, 2.62, pos_z]
             )
+
+        # Parte do teto sobre o lado oposto ao embarque.
+        # O lado aberto continua livre para mostrar o caracol.
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(0.72, 0.12, 3.50),
+            self.material_amarelo, [-0.52, 2.62, 0]
+        )
 
         # Para-brisa dianteiro e vidro traseiro.
         self.adicionar_peca(
@@ -509,11 +516,11 @@ class TrabalhoComputacaoGrafica(Base):
         angulo_porta = self.animacao.porta * (math.pi / 2)
 
         self.porta_esquerda.local_matrix = (
-            Matrix.make_translation(1.04, 1.72, -0.90)
+            Matrix.make_translation(1.04, 1.72, -0.82)
             @ Matrix.make_rotation_y(angulo_porta)
         )
         self.porta_direita.local_matrix = (
-            Matrix.make_translation(1.04, 1.72, 0.90)
+            Matrix.make_translation(1.04, 1.72, 0.82)
             @ Matrix.make_rotation_y(-angulo_porta)
         )
 
