@@ -58,6 +58,29 @@ class TestarAnimacao(unittest.TestCase):
         self.assertLess(animacao.y_caracol, animacao.CARACOL_Y_INTERIOR)
         self.assertEqual(animacao.porta, 1.0)
 
+    def test_caracol_atinge_topo_da_rampa_antes_de_entrar(self):
+        animacao = SequenciaAnimacao()
+        avancar_ate(animacao, "embarque")
+
+        tempo_ate_topo = animacao.DURACOES["embarque"] * (
+            animacao.PROGRESSO_ATE_RAMPA
+            + (1.0 - animacao.PROGRESSO_ATE_RAMPA)
+            * animacao.PROGRESSO_SUBIDA_RAMPA
+        )
+        animacao.atualizar(tempo_ate_topo)
+
+        self.assertEqual(animacao.etapa, "embarque")
+        self.assertAlmostEqual(
+            animacao.x_caracol, animacao.CARACOL_X_TOPO_RAMPA
+        )
+        self.assertEqual(animacao.y_caracol, animacao.CARACOL_Y_INTERIOR)
+
+        animacao.atualizar(0.1)
+        self.assertLess(
+            animacao.x_caracol, animacao.CARACOL_X_TOPO_RAMPA
+        )
+        self.assertEqual(animacao.y_caracol, animacao.CARACOL_Y_INTERIOR)
+
     def test_caracol_termina_dentro_antes_de_ser_embarcado(self):
         animacao = SequenciaAnimacao()
         avancar_ate(animacao, "espera_embarcado")
