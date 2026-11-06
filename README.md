@@ -79,4 +79,3 @@ python -m unittest discover -s tests -v
 - STEMKOSKI, Lee; PASCALE, Michael. *Developing Graphics Frameworks with Python and OpenGL*. CRC Press, 2022. DOI: https://doi.org/10.1201/9781003181378.
 - Repositório público de exemplos associado ao livro: https://github.com/ax-va/PyOpenGL-Pygame-Stemkoski-Pascale-2021 (revisão `f3029550425385f90e0d66ba7f73bb310112039b`).
 
-O projeto foi desenvolvido com apoio de IA na estruturação, comentários, testes e documentação. Os integrantes devem revisar, executar e compreender o código antes da apresentação.
