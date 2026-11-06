@@ -12,9 +12,18 @@ from pathlib import Path
 PASTA_PROJETO = Path(__file__).resolve().parent
 
 
+# IDENTIFICACAO DO INTERPRETADOR PYTHON
+# O modulo sys fornece informacoes sobre o Python que esta executando o projeto.
+# A propriedade sys.version_info informa a versao principal e a versao secundaria.
+# Como o PyCharm executa o arquivo com o interpretador selecionado no projeto,
+# essa verificacao identifica automaticamente a versao escolhida pelo usuario.
+#
+# A partir dessa informacao, o programa seleciona versoes compativeis das
+# bibliotecas, evitando exigir que todos os computadores usem o mesmo Python.
 def obter_pacotes_compativeis():
     """Escolhe versoes das bibliotecas conforme a versao do Python."""
 
+    # Guarda os numeros da versao para orientar a selecao das dependencias.
     versao = sys.version_info[:2]
     major, minor = versao
 
@@ -61,11 +70,13 @@ def obter_pacotes_compativeis():
 def preparar_bibliotecas():
     """Confere e instala as bibliotecas adequadas ao Python selecionado."""
 
+    # Obtem os pacotes adequados e cria uma lista para os que precisarem de instalacao.
     bibliotecas = obter_pacotes_compativeis()
     faltando = []
 
-    # Testa o import real, nao apenas a existencia da pasta da biblioteca.
-    # Assim tambem identificamos pacotes que nao funcionam neste Python.
+    # Tenta importar cada biblioteca no proprio interpretador em execucao.
+    # Uma biblioteca pode estar instalada, mas nao funcionar naquela versao do Python.
+    # Por isso, o teste de importacao e mais adequado do que verificar apenas pastas.
     for modulo, pacote in bibliotecas.items():
         try:
             importlib.import_module(modulo)
@@ -106,7 +117,12 @@ def preparar_bibliotecas():
                 check=True
             )
 
-        # Instala somente pacotes binarios compativeis, sem compilacao local.
+        # sys.executable representa o caminho do interpretador que esta executando
+        # este arquivo. Assim, o pip instala as bibliotecas no ambiente correto,
+        # inclusive quando o projeto e iniciado pelo botao Run do PyCharm.
+        #
+        # A opcao --only-binary solicita pacotes ja compilados para o sistema.
+        # Isso evita tentar compilar bibliotecas C/C++ no computador do usuario.
         subprocess.run(
             [
                 sys.executable, "-m", "pip", "install",
@@ -125,7 +141,9 @@ def preparar_bibliotecas():
     print("Bibliotecas instaladas com sucesso.")
 
 
-# Esta verificacao roda antes dos imports do Pygame, OpenGL e NumPy.
+# EXECUCAO DA VERIFICACAO DE DEPENDENCIAS
+# Esta chamada ocorre antes dos imports graficos. Dessa forma, as bibliotecas
+# necessarias sao verificadas e preparadas antes de a cena ser inicializada.
 preparar_bibliotecas()
 
 # O framework Py3D ja acompanha a pasta do projeto.
@@ -173,9 +191,14 @@ POSICAO_CARACOL_Z = SequenciaAnimacao.ONIBUS_Z_PARADA
 class TrabalhoComputacaoGrafica(Base):
     """Cria os objetos e atualiza a cena a cada quadro."""
 
+    # A classe herda de Base, que fornece a janela, os controles de entrada,
+    # o relogio da aplicacao e o ciclo principal de atualizacao.
+
     def __init__(self):
         super().__init__(screen_size=(1100, 720))
 
+    # METODOS AUXILIARES
+    # Os metodos abaixo evitam repetir instrucoes na construcao dos objetos.
     def criar_material(self, cor, textura=None):
         """Cria um material com iluminacao Phong."""
         return PhongMaterial(
@@ -192,6 +215,9 @@ class TrabalhoComputacaoGrafica(Base):
         grupo.add(peca)
         return peca
 
+    # INICIALIZACAO DA CENA
+    # Este metodo e executado pelo framework antes do inicio da animacao.
+    # Nele sao preparados camera, iluminacao, materiais e objetos tridimensionais.
     def initialize(self):
         pygame.display.set_caption("Caracol embarcando no onibus")
 
@@ -250,6 +276,9 @@ class TrabalhoComputacaoGrafica(Base):
         self.angulo_antena = 0.0
         self.angulo_caracol = math.pi
 
+    # CONSTRUCAO DO CENARIO
+    # Cada objeto e criado a partir de uma geometria, recebe um material
+    # e e posicionado no sistema de coordenadas tridimensional.
     def criar_ambiente(self):
         """Cria a rua e um ponto de onibus organizado fora do caminho do caracol."""
         # Asfalto de toda a cena.
@@ -328,6 +357,9 @@ class TrabalhoComputacaoGrafica(Base):
                 [pos_x, 1.95, -5.1]
             )
 
+    # CONSTRUCAO DO ONIBUS
+    # As pecas sao adicionadas a um grupo principal. Assim, o movimento do grupo
+    # desloca toda a carroceria e seus componentes de maneira conjunta.
     def criar_onibus(self):
         """Monta um onibus amarelo com janelas e duas portas articuladas."""
         self.onibus = Group()
@@ -520,6 +552,8 @@ class TrabalhoComputacaoGrafica(Base):
         )
         return antena
 
+    # CONSTRUCAO DO PERSONAGEM
+    # O caracol tambem e um grupo hierarquico, composto por corpo, casco e antenas.
     def criar_caracol(self):
         """Monta o caracol e coloca o grupo dentro do onibus."""
         self.caracol = Group()
@@ -554,6 +588,9 @@ class TrabalhoComputacaoGrafica(Base):
         self.antena_esquerda = self.criar_antena(self.caracol, [0.82, 1.02, -0.22])
         self.antena_direita = self.criar_antena(self.caracol, [0.82, 1.02, 0.22])
 
+    # ATUALIZACAO DA ANIMACAO
+    # O framework chama este metodo continuamente, uma vez a cada quadro.
+    # As posicoes e rotacoes sao atualizadas antes de a cena ser renderizada.
     def update(self):
         """Atualiza os movimentos e desenha a cena."""
         # A barra de espaco pausa ou continua a animacao.
