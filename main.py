@@ -340,7 +340,15 @@ class TrabalhoComputacaoGrafica(Base):
                 roda.rotate_y(-5.0 * self.delta_time)
 
         # As antenas balancam durante a chegada e o embarque.
-        intensidade = 0.28 if self.animacao.etapa == "embarque" else 0.08
+        if self.animacao.etapa == "embarque":
+            progresso = self.animacao.tempo_etapa / self.animacao.DURACOES["embarque"]
+            intensidade = 0.08 + 0.20 * progresso
+        elif self.animacao.etapa == "espera_embarcado":
+            progresso = self.animacao.tempo_etapa / self.animacao.DURACOES["espera_embarcado"]
+            intensidade = 0.28 - 0.20 * progresso
+        else:
+            intensidade = 0.08
+
         novo_angulo_antena = math.sin(self.tempo_cena * 5.0) * intensidade
         diferenca_antena = novo_angulo_antena - self.angulo_antena
         self.antena_esquerda.rotate_z(diferenca_antena)

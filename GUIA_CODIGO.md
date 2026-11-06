@@ -39,7 +39,7 @@ O caracol é adicionado ao grupo do ônibus com a chamada self.onibus.add(self.c
 
 Isso cria uma relação hierárquica. Antes de embarcar, o programa calcula a posição local do caracol para que ele caminhe até a porta. Depois do embarque, o caracol fica na posição local fixa [0, altura, 0].
 
-Como essa posição é relativa ao grupo do ônibus, quando o ônibus se desloca, o caracol acompanha automaticamente.
+Como essa posição é relativa ao grupo do ônibus, quando o ônibus se desloca, o caracol acompanha automaticamente. A escala do personagem foi ajustada para ele caber na porta e na cabine.
 
 ## 6. Como funciona animacao.py
 

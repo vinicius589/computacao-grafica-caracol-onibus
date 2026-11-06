@@ -2,7 +2,7 @@
 
 ## Testes previstos nesta revisão
 
-A suíte verifica:
+A suíte de animação foi executada localmente: **13 testes passaram**. Ela verifica:
 - O ônibus chega primeiro e espera o caracol.
 - Os dois chegam antes da abertura da porta.
 - A porta abre antes do embarque.
@@ -19,6 +19,6 @@ A suíte verifica:
 
 ## Limite da validação
 
-Os testes automatizados cobrem a lógica da sequência. A janela gráfica deve ser executada no Windows com Python 3.11, Pygame e PyOpenGL para conferir visualmente a entrada pela porta, a visibilidade do passageiro, a textura, a câmera, a iluminação e as sombras.
+Os 13 testes automatizados cobrem a lógica da sequência. A janela gráfica ainda deve ser executada no Windows para conferir visualmente a entrada pela porta, a visibilidade do passageiro, a textura, a câmera, a iluminação e as sombras. A revisão desta branch não substitui esse teste visual.
 
 Execute INICIAR.bat para abrir a cena e TESTAR.bat para repetir os testes.
