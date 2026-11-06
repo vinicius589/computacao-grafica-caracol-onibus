@@ -129,10 +129,10 @@ class TrabalhoComputacaoGrafica(Base):
         self.renderer = Renderer(clear_color=(0.34, 0.52, 0.68))
         self.scene = Scene()
 
-        # A camera fica voltada para a lateral aberta do onibus e para o caracol.
-        self.camera = Camera(angle_of_view=58, aspect_ratio=1100 / 720, near=0.1, far=100)
-        self.camera.set_position([7.2, 5.6, 8.8])
-        self.camera.look_at([-0.5, 1.0, 0.3])
+        # A camera observa a lateral aberta, o caracol e a frente do onibus.
+        self.camera = Camera(angle_of_view=52, aspect_ratio=1100 / 720, near=0.1, far=100)
+        self.camera.set_position([6.5, 4.8, 6.8])
+        self.camera.look_at([-1.0, 1.1, 1.0])
 
         # O teclado movimenta a camera.
         self.camera_rig = MovementRig(units_per_second=4, degrees_per_second=65)
