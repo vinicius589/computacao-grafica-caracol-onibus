@@ -1,46 +1,53 @@
 # Caracol robótico e ônibus de brinquedo
 
-Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python, Pygame, OpenGL e no framework Py3D associado ao livro de Lee Stemkoski e Michael Pascale.
+Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python com Pygame, PyOpenGL e NumPy, usando o framework Py3D incluído neste repositório.
 
 ## Cena
 
-A cena representa um ponto de ônibus. O caracol robótico chega ao ponto, espera o ônibus, caminha até a porta lateral, sobe por uma rampa e entra completamente na cabine. A porta fecha e o ônibus parte levando o caracol.
+A cena mostra um ponto de ônibus com calçada, cobertura, banco e placa posicionados fora do caminho do personagem. O ônibus amarelo tem carroceria, janelas, rodas, para-choques e duas folhas articuladas na entrada.
 
-O caracol faz parte do grupo hierárquico do ônibus. Antes do embarque, sua posição é calculada em relação ao ônibus para que ele possa caminhar até a porta. Depois de entrar, sua posição local fica fixa; assim, o movimento do ônibus leva o passageiro junto, sem uma segunda animação independente.
+O caracol robótico chega ao ponto, espera o ônibus, caminha até a entrada lateral, sobe pela rampa e entra na cabine. As portas fecham e o ônibus parte levando o caracol.
 
-## Arquivos
+O personagem fica um pouco mais próximo da lateral aberta para permanecer visível. O banco, a placa e as árvores ficam na parte de trás do cenário, sem bloquear o embarque.
 
-- main.py: ponto de entrada; cria a janela, os modelos, a câmera, as luzes e a renderização.
-- animacao.py: controla as etapas, os tempos, a porta e as posições do embarque.
-- assets/asfalto.png: textura aplicada ao chão.
-- requirements.txt: dependências Python.
-- py3d/: componentes do framework e shaders usados.
-- instalar_framework.py: instala o framework quando necessário.
-- tests/: testes automatizados da animação e do instalador.
-- GUIA_CODIGO.md: explicação do código para estudo.
-- ROTEIRO_APRESENTACAO.md: roteiro de demonstração.
+## Como abrir no PyCharm
 
-## Instalação no Windows
+1. Baixe o repositório pelo botão **Code > Download ZIP** e extraia a pasta, ou clone o repositório.
+2. Abra o PyCharm e escolha **Open**.
+3. Selecione a pasta completa `computacao-grafica-caracol-onibus`.
+4. Configure um interpretador Python 3.11 para o projeto.
+5. Abra o arquivo `main.py`.
+6. Clique no botão **Run** (Executar).
 
-Requer Python 3.11 e conexão com a internet na primeira instalação.
+Na primeira execução, o próprio `main.py` verifica e instala automaticamente, se estiverem faltando, somente estas três bibliotecas: Pygame, PyOpenGL e NumPy. É necessário ter conexão com a internet nessa primeira execução.
 
-1. Clone o repositório:
-   git clone https://github.com/vinicius589/computacao-grafica-caracol-onibus.git
-   cd computacao-grafica-caracol-onibus
+A pasta `py3d` já acompanha o projeto. Não é necessário executar instalador separado, arquivo BAT ou baixar outro framework.
 
-2. Execute INICIAR.bat.
+## Bibliotecas utilizadas
 
-O BAT cria o ambiente virtual, instala as dependências, prepara o framework e abre a aplicação pelo arquivo main.py.
+- Python 3.11.
+- Pygame 2.5.2: janela, teclado e controle do tempo.
+- PyOpenGL 3.1.7: acesso à renderização OpenGL.
+- NumPy 1.26.4: operações com matrizes e vetores.
 
-Para executar os testes, use TESTAR.bat.
+Não há dependências de pytest ou de outras bibliotecas externas.
 
-## Executar diretamente pelo main.py
+## Arquivos principais
 
-Depois de instalar as dependências e o framework, execute:
+- `main.py`: ponto de entrada. Prepara as bibliotecas, cria a janela, monta a cena e atualiza a animação.
+- `animacao.py`: controla a ordem dos movimentos e as posições dos personagens e da porta.
+- `py3d/`: framework incluído no projeto, com geometrias, câmera, materiais, luzes e shaders.
+- `assets/asfalto.png`: textura aplicada ao chão.
+- `requirements.txt`: lista das três bibliotecas usadas.
+- `tests/test_animacao.py`: testes da sequência usando `unittest`, que faz parte do Python.
 
-    .venv\Scripts\python.exe main.py
+## Testar a lógica da animação
 
-O arquivo main.py também possui uma função main(), que inicia a aplicação.
+Os testes não são necessários para abrir a cena. Para executá-los pelo terminal do PyCharm, use:
+
+```bash
+python -m unittest discover -s tests -v
+```
 
 ## Controles
 
@@ -53,18 +60,19 @@ O arquivo main.py também possui uma função main(), que inicia a aplicação.
 
 ## Recursos gráficos
 
-- Modelos montados por composição de caixas, esferas, cilindros e elipsoides.
+- Modelos montados com caixas, esferas, cilindros e elipsoides.
 - Translação, rotação, escala e hierarquia de objetos.
 - Câmera em perspectiva controlada pelo teclado.
 - Textura de imagem com coordenadas UV.
-- Luz ambiente e luz direcional, materiais Phong e vetores normais.
+- Luz ambiente e direcional, materiais Phong e vetores normais.
 - Shadow mapping por passagem de profundidade.
-- Animação com delta time e pausa.
-- Embarque coordenado: o caracol caminha até a porta, sobe pela rampa, fica dentro da cabine e acompanha o ônibus durante a partida.
+- Animação baseada em delta time.
+- Portas articuladas em duas folhas, presas à carroceria.
+- Embarque coordenado por uma rampa; depois de entrar, o caracol acompanha o ônibus durante a partida.
 
 ## Fontes
 
-- STEMKOSKI, Lee; PASCALE, Michael. Developing Graphics Frameworks with Python and OpenGL. CRC Press, 2022. DOI: https://doi.org/10.1201/9781003181378.
-- Repositório público de exemplos associado ao livro: https://github.com/ax-va/PyOpenGL-Pygame-Stemkoski-Pascale-2021 (revisão f3029550425385f90e0d66ba7f73bb310112039b).
+- STEMKOSKI, Lee; PASCALE, Michael. *Developing Graphics Frameworks with Python and OpenGL*. CRC Press, 2022. DOI: https://doi.org/10.1201/9781003181378.
+- Repositório público de exemplos associado ao livro: https://github.com/ax-va/PyOpenGL-Pygame-Stemkoski-Pascale-2021 (revisão `f3029550425385f90e0d66ba7f73bb310112039b`).
 
 O projeto foi desenvolvido com apoio de IA na estruturação, comentários, testes e documentação. Os integrantes devem revisar, executar e compreender o código antes da apresentação.
