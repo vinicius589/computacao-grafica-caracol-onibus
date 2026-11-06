@@ -11,7 +11,14 @@ Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python co
 
 ## Contribuições individuais
 
-Descrever nesta seção a contribuição efetiva de cada integrante para o desenvolvimento, a implementação, os testes e a apresentação do projeto. Essa divisão deve ser conferida e preenchida pela dupla, sem atribuir tarefas que não foram realizadas.
+- **Vinícius da Mota Campos:** responsabilidade principal pela construção e organização do projeto no GitHub, integração dos arquivos e acompanhamento dos ajustes técnicos da implementação.
+- **Miguel Felipe Viana:** responsabilidade principal pela condução da apresentação oral, explicação da proposta e demonstração da sequência e dos conceitos gráficos.
+
+Essa divisão registra as responsabilidades principais combinadas para a entrega. Ambos os integrantes devem conhecer a proposta, compreender os conceitos apresentados e estar preparados para responder às perguntas sobre o funcionamento do trabalho.
+
+## Uso de inteligência artificial
+
+A ferramenta de IA generativa **ChatGPT** foi utilizada como apoio ao processo de desenvolvimento e documentação. O suporte incluiu planejamento de soluções, elaboração e revisão de trechos de código, análise de problemas de execução e compatibilidade entre versões de Python e bibliotecas, apoio à estruturação de testes automatizados e organização das explicações técnicas. A assistência incidiu especialmente sobre partes de `main.py` e `animacao.py`, componentes relacionados do framework `py3d/` e os materiais de documentação. As sugestões foram avaliadas e adaptadas ao projeto. A ferramenta não substitui a compreensão dos conceitos nem a responsabilidade dos integrantes pela integração, revisão, apresentação e resultado final.
 
 ## Cena
 
@@ -84,6 +91,33 @@ python -m unittest discover -s tests -v
 - Animação baseada em delta time.
 - Portas articuladas em duas folhas, presas à carroceria.
 - Embarque coordenado por uma rampa; depois de entrar, o caracol acompanha o ônibus durante a partida.
+
+## Shaders e dados enviados à GPU
+
+O material utilizado nas superfícies é o `PhongMaterial`, definido em `py3d/material/phong.py`.
+
+**Atributos de vértice do shader Phong:**
+
+- `vertexPosition` (`vec3`): posição do vértice.
+- `vertexUV` (`vec2`): coordenadas utilizadas para consultar a textura.
+- `vertexNormal` (`vec3`): normal da superfície, utilizada no cálculo da iluminação.
+
+**Uniformes principais:**
+
+- `modelMatrix`, `viewMatrix` e `projectionMatrix`: transformações do objeto, da câmera e da projeção.
+- `baseColor`: cor base do material.
+- `textureSampler`: amostrador da textura, quando utilizada.
+- `viewPosition`: posição da câmera, utilizada no cálculo especular.
+- `light0` e `light1`: dados das fontes de iluminação presentes na cena.
+- `shadow0`: dados da câmera de sombra e da textura de profundidade, quando o shadow mapping está habilitado.
+
+O shader de profundidade, em `py3d/material/depth.py`, utiliza `vertexPosition` e as matrizes de modelo, visão e projeção. Na etapa de fragmentos, grava o valor de profundidade obtido com `gl_FragCoord.z`.
+
+### Iluminação de superfície e sombra projetada
+
+O cálculo Phong combina componentes ambiente, difusa e especular para determinar a aparência iluminada de cada superfície. O **shadow mapping** é um processo separado: primeiro a cena é renderizada do ponto de vista da luz para gerar um mapa de profundidade; depois, durante a renderização normal, o shader compara a profundidade do fragmento com a registrada no mapa. Quando outro objeto bloqueia a luz, a região correspondente é escurecida.
+
+Essa distinção é importante: Phong calcula como a superfície reage à luz; shadow mapping identifica regiões que não recebem diretamente essa luz por causa de um objeto que a bloqueia.
 
 ## Fontes
 
