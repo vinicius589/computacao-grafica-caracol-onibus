@@ -2,7 +2,7 @@
 
 ## Testes previstos nesta revisão
 
-A lógica da animação foi executada localmente: **13 testes passaram**. Eles verificam:
+A lógica da animação foi executada localmente nesta revisão: **13 testes passaram**. Eles verificam:
 - O ônibus chega primeiro e espera o caracol.
 - A porta abre antes do embarque.
 - O caracol caminha até a rampa sem subir antes da hora.
@@ -19,6 +19,6 @@ A lógica da animação foi executada localmente: **13 testes passaram**. Eles v
 
 ## Limite da validação
 
-Os 13 testes executados nesta revisão cobrem a lógica da sequência, incluindo a aproximação da rampa, a subida, o fechamento da porta e a partida. A janela gráfica ainda precisa ser executada no Windows para conferir visualmente a rampa, o encaixe do caracol, a textura, a câmera, a iluminação e as sombras. Os testes automatizados não substituem essa verificação visual.
+Os 13 testes executados nesta revisão cobrem a lógica da sequência, incluindo a aproximação da rampa, a subida, o fechamento da porta e a partida. A janela gráfica ainda precisa ser executada no Windows para conferir visualmente a abertura das duas folhas, o encaixe do caracol na rampa, a visibilidade da cabine, o novo posicionamento do banco e da placa, a textura, a câmera, a iluminação e as sombras. Os testes automatizados não substituem essa verificação visual.
 
 Execute INICIAR.bat para abrir a cena e TESTAR.bat para repetir os testes.
