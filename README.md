@@ -4,7 +4,7 @@ Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python, P
 
 ## Cena
 
-A cena representa um ponto de ônibus. O caracol robótico chega ao ponto, espera o ônibus, caminha até a porta lateral, sobe por uma rampa e entra completamente na cabine. A porta fecha e o ônibus parte levando o caracol.
+A cena representa um ponto de ônibus com calçada, cobertura, banco e placa posicionados fora do percurso. O ônibus amarelo possui carroceria, janelas, rodas e duas folhas articuladas na entrada. O caracol robótico chega ao ponto, espera o ônibus, caminha até a entrada lateral, sobe por uma rampa e entra completamente na cabine. As portas fecham e o ônibus parte levando o caracol.
 
 O caracol faz parte do grupo hierárquico do ônibus. Antes do embarque, sua posição é calculada em relação ao ônibus para que ele possa caminhar até a porta. Depois de entrar, sua posição local fica fixa; assim, o movimento do ônibus leva o passageiro junto, sem uma segunda animação independente.
 
@@ -60,7 +60,8 @@ O arquivo main.py também possui uma função main(), que inicia a aplicação.
 - Luz ambiente e luz direcional, materiais Phong e vetores normais.
 - Shadow mapping por passagem de profundidade.
 - Animação com delta time e pausa.
-- Embarque coordenado: o caracol caminha até a porta, sobe pela rampa, fica dentro da cabine e acompanha o ônibus durante a partida.
+- Porta articulada em duas folhas: abre para fora, permanece ligada à carroceria e fecha antes da partida.
+- Embarque coordenado: o caracol caminha até a entrada, sobe pela rampa, fica dentro da cabine e acompanha o ônibus durante a partida.
 
 ## Fontes
 
