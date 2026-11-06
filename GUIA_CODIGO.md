@@ -1,90 +1,115 @@
-# Guia para entender o codigo
+# Guia para entender o código
 
-Este guia acompanha o codigo-fonte. A ideia e entender primeiro a funcao de cada arquivo e depois seguir a ordem da animacao.
+Este guia explica os trechos mais importantes em linguagem simples. Para apresentar, comece por main.py e depois mostre a lógica de animacao.py.
 
-## 1. Arquivos principais
+## 1. Como iniciar o programa
 
-- `main.py`: monta a janela, a cena, os personagens, a camera, a iluminacao e chama a renderizacao.
-- `animacao.py`: controla as posicoes e a sequencia de acoes.
-- `py3d/`: framework usado para geometrias, materiais, camera, luzes, shaders e shadow mapping.
-- `assets/asfalto.png`: imagem usada como textura do chao.
-- `instalar_framework.py`: baixa o framework apenas quando ele ainda nao esta instalado.
+No final de main.py existe uma função main(). Ela cria a aplicação e chama run(), que pertence ao framework. O framework abre a janela e chama os métodos initialize() e update().
 
-## 2. Como a animacao funciona
+A condição no final do arquivo faz a função main() ser executada quando main.py é aberto diretamente.
 
-A classe `SequenciaAnimacao` guarda as informacoes da cena. As variaveis mais importantes sao:
+## 2. Como o código está dividido
 
-- `x_caracol`: posicao horizontal do caracol.
-- `z_onibus`: posicao do onibus no percurso.
-- `porta`: valor entre 0 e 1; 0 significa fechada e 1 significa aberta.
-- `etapa`: informa em qual parte da sequencia estamos.
-- `tempo_etapa`: conta quanto tempo passou na etapa atual.
+- main.py: monta e desenha a cena.
+- animacao.py: controla a ordem dos movimentos.
+- py3d/: contém as classes do framework, os materiais e os shaders.
+- assets/asfalto.png: textura do chão.
+- tests/: verifica a sequência sem precisar abrir a janela 3D.
 
-O metodo `atualizar(delta_tempo)` recebe o tempo decorrido desde o quadro anterior. Por isso, a velocidade da animacao depende do tempo e nao diretamente da quantidade de quadros por segundo.
+## 3. Funções principais de main.py
 
-A sequencia e:
+- criar_material(cor, textura): prepara a cor e a iluminação de uma peça.
+- adicionar_peca(grupo, geometria, material, posicao): cria uma malha e coloca no grupo.
+- initialize(): prepara câmera, luzes, materiais, cenário e personagens.
+- criar_ambiente(): monta a rua e o ponto de ônibus.
+- criar_onibus(): monta a carroceria, as rodas, a porta e as aberturas da cabine.
+- criar_caracol(): monta corpo, casco, sensor e antenas.
+- update(): atualiza os movimentos e chama o renderizador.
+- main(): inicia a aplicação.
 
-1. aproximacao: caracol e onibus se deslocam;
-2. abrir: a porta abre aos poucos;
-3. sinalizar: o caracol balanca as antenas e o onibus espera;
-4. fechar: a porta fecha;
-5. partir: o onibus retoma o percurso;
-6. espera: pequena pausa antes de repetir.
+## 4. Como o ônibus deixa o caracol visível
 
-O metodo `onibus_esta_se_movendo()` informa quando as rodas devem girar. Assim, elas param quando o onibus espera.
+A carroceria inferior forma o piso. A lateral de embarque é feita com colunas separadas, deixando espaços abertos entre elas. O teto também usa barras, em vez de uma placa fechada.
 
-## 3. Como a cena 3D e montada
+Isso permite ver o caracol atravessando a porta e depois dentro da cabine.
 
-No arquivo `main.py`:
+## 5. Por que o caracol acompanha o ônibus
 
-- `initialize()`: prepara a cena e cria os materiais, luzes, camera e objetos.
-- `criar_ambiente()`: cria o chao, a calcada, a faixa e o ponto.
-- `criar_onibus()`: monta a carroceria, janelas, rodas, farois e porta.
-- `criar_caracol()`: monta corpo, casco, sensor e antenas.
-- `criar_antena()`: cria uma antena como um grupo separado para poder gira-la.
-- `adicionar_peca()`: cria uma malha, posiciona e a adiciona a um grupo.
-- `criar_material()`: prepara materiais com iluminacao Phong.
-- `update()`: atualiza a animacao e desenha cada quadro.
+O caracol é adicionado ao grupo do ônibus com a chamada self.onibus.add(self.caracol).
 
-## 4. Transformacoes e hierarquia
+Isso cria uma relação hierárquica. Antes de embarcar, o programa calcula a posição local do caracol para que ele caminhe até a porta. Depois do embarque, o caracol fica na posição local fixa [0, altura, 0].
 
-- Translacao muda a posicao: `set_position()`.
-- Rotacao muda a orientacao: `rotate_x()`, `rotate_y()` e `rotate_z()`.
-- Escala muda o tamanho: `scale()`.
+Como essa posição é relativa ao grupo do ônibus, quando o ônibus se desloca, o caracol acompanha automaticamente.
 
-O onibus e o caracol sao grupos. As partes ficam dentro desses grupos. Quando o grupo se move, todas as pecas acompanham. As antenas tambem sao grupos separados, permitindo mover o caracol sem perder o movimento articulado.
+## 6. Como funciona animacao.py
 
-## 5. Camera, pausa e controles
+A classe SequenciaAnimacao guarda:
 
-A camera usa projecao em perspectiva. O `MovementRig` recebe as teclas e movimenta a camera. A tecla Espaco altera a variavel `pausado`. A camera continua funcionando durante a pausa, mas a sequencia dos personagens fica parada.
+- x_caracol: posição do caracol no percurso.
+- y_caracol: altura do caracol.
+- z_onibus: posição do ônibus.
+- porta: abertura da porta, de 0 (fechada) a 1 (aberta).
+- embarcado: informa se o caracol já está dentro.
+- etapa: parte atual da sequência.
+- tempo_etapa: tempo passado na etapa atual.
 
-## 6. Textura, iluminacao e sombras
+As etapas são:
 
-A textura `assets/asfalto.png` e carregada pela classe `Texture` e aplicada ao chao. As geometrias fornecem coordenadas UV, usadas para localizar os pontos da imagem na superficie.
+1. aproximacao: o ônibus chega e espera o caracol no ponto.
+2. abrir_porta: a porta desliza e libera a entrada.
+3. embarque: o caracol atravessa a abertura e sobe para o piso da cabine.
+4. espera_embarcado: o caracol já está dentro e o ônibus aguarda.
+5. fechar_porta: a porta fecha depois do embarque.
+6. partida: o ônibus sai com o caracol dentro.
+7. reiniciar: pausa curta antes de repetir a cena.
 
-A cena usa uma luz ambiente e uma luz direcional. Os materiais Phong usam as normais dos vertices para calcular como a luz atinge cada superficie.
+A função interpolar(inicio, fim, progresso) calcula posições intermediárias. Assim, o movimento é gradual, sem saltar diretamente de uma posição para outra.
 
-O shadow mapping e diferente do calculo de iluminacao. O renderer primeiro faz uma passagem pela camera da luz e grava a profundidade dos objetos na textura de sombra. Depois, no desenho normal, o shader Phong compara a profundidade do ponto com a que foi gravada. Quando um objeto esta entre a luz e a superficie, essa regiao fica escurecida.
+## 7. O que é delta time
 
-Os shaders utilizados estao em:
+delta_time é o tempo decorrido desde o quadro anterior. A animação usa esse valor para avançar o tempo da etapa. Assim, a velocidade não depende diretamente da quantidade de quadros por segundo.
 
-- `py3d/material/phong.py`: vertex shader e fragment shader da iluminacao Phong e leitura da sombra;
-- `py3d/material/depth.py`: shader usado na passagem de profundidade;
-- `py3d/core_ext/renderer.py`: organiza as duas passagens de renderizacao;
-- `py3d/light/shadow.py`: configura camera, textura, intensidade e bias da sombra.
+O método atualizar() também aproveita o tempo que sobrar de um quadro longo na etapa seguinte. Isso evita que uma atualização demorada deixe a sequência atrasada.
 
-## 7. Perguntas que podem aparecer
+## 8. Transformações e hierarquia
 
-**O que e delta time?**
-E o tempo decorrido desde o quadro anterior. Ele permite calcular deslocamentos por segundo.
+- Translação muda a posição: set_position().
+- Rotação muda a orientação: rotate_x(), rotate_y() e rotate_z().
+- Escala muda o tamanho: scale().
+- Hierarquia organiza objetos dentro de grupos: self.onibus.add(self.caracol).
 
-**Qual a diferenca entre sombreamento e sombra projetada?**
-Sombreamento calcula a aparencia da superficie conforme luz e normais. Sombra projetada e a regiao bloqueada por outro objeto, calculada pelo mapa de profundidade.
+## 9. Câmera, pausa e controles
 
-**Por que usar grupos?**
-Para organizar as partes e aplicar uma transformacao ao conjunto sem ter de mover cada peca separadamente.
+A câmera usa perspectiva e o MovementRig lê as teclas. Espaço alterna a variável pausado: a animação para, mas a câmera continua funcionando.
 
-**Como a interacao e garantida?**
-O onibus espera os dois personagens chegarem. Depois abre a porta, aguarda o sinal do caracol, fecha a porta e so entao parte.
+## 10. Textura, iluminação e sombras
 
-Estude principalmente `animacao.py` e o metodo `update()`, pois eles mostram a logica mais importante da apresentacao.
+O arquivo assets/asfalto.png é carregado por Texture e aplicado ao chão. As geometrias fornecem coordenadas UV.
+
+A luz ambiente ilumina a cena de forma geral. A luz direcional representa uma fonte de luz em uma direção. O material Phong usa as normais dos vértices para calcular a iluminação.
+
+O shadow mapping faz uma passagem pela câmera da luz e grava a profundidade dos objetos. Depois, o shader Phong consulta esse mapa para decidir se um ponto está atrás de outro objeto e deve receber sombra.
+
+Os arquivos principais são:
+
+- py3d/material/phong.py: shader Phong e leitura do mapa de sombra.
+- py3d/material/depth.py: shader da passagem de profundidade.
+- py3d/core_ext/renderer.py: executa as passagens de sombra e de imagem.
+- py3d/light/shadow.py: configura a câmera e a textura de sombra.
+
+## 11. Perguntas que podem aparecer
+
+**Como sabemos que o caracol está dentro?**
+A posição dele passa pela porta e termina dentro do grupo do ônibus. Depois, fica em uma posição local fixa dentro da cabine.
+
+**Por que o caracol acompanha o ônibus?**
+Porque ele é filho do grupo do ônibus. A transformação do pai também afeta os filhos.
+
+**Como evitamos que a porta feche antes da entrada?**
+O controlador só passa para a etapa de fechar depois de terminar a etapa de embarque.
+
+**Como a animação não depende do FPS?**
+Ela usa o tempo decorrido, chamado delta time, e calcula o progresso de cada etapa.
+
+**Qual a diferença entre iluminação e sombra?**
+A iluminação calcula como a luz atinge a superfície. A sombra projetada verifica se outro objeto bloqueia a luz naquele ponto.

@@ -29,7 +29,7 @@ PASTA_PROJETO = Path(__file__).resolve().parent
 PASTA_ASSETS = PASTA_PROJETO / "assets"
 
 # O caracol fica pequeno o bastante para caber na cabine.
-ESCALA_CARACOL = 0.42
+ESCALA_CARACOL = 0.59
 
 # Posicoes fixas do onibus na cena.
 ONIBUS_X = SequenciaAnimacao.ONIBUS_X

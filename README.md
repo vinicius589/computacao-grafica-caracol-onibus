@@ -4,36 +4,43 @@ Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python, P
 
 ## Cena
 
-A cena mostra um caracol robótico que se aproxima de um ponto de ônibus. O ônibus chega, aguarda a chegada do caracol, abre a porta e espera enquanto o caracol sinaliza movimentando as antenas. Depois, a porta fecha e o ônibus parte.
+A cena representa um ponto de ônibus. O caracol robótico chega ao ponto, espera o ônibus, entra pela porta lateral aberta e se posiciona dentro da cabine. A porta fecha e o ônibus parte levando o caracol.
 
-A interação é coordenada por etapas: o ônibus só abre a porta depois que os dois personagens chegam e só parte depois de concluir o fechamento.
+O caracol faz parte do grupo hierárquico do ônibus. Antes do embarque, sua posição é calculada em relação ao ônibus para que ele possa caminhar até a porta. Depois de entrar, sua posição local fica fixa; assim, o movimento do ônibus leva o passageiro junto, sem uma segunda animação independente.
 
 ## Arquivos
 
-- `main.py`: construção da cena 3D, modelos, câmera, iluminação, materiais e renderização.
-- `animacao.py`: posições e etapas da animação controladas pelo tempo decorrido.
-- `assets/asfalto.png`: textura de imagem aplicada ao chão.
-- `requirements.txt`: dependências Python.
-- `py3d/`: componentes do framework e shaders usados na aplicação, incluídos nesta pasta do projeto.
-- `instalar_framework.py`: instala a pasta `py3d` quando ela ainda não estiver disponível.
-- `tests/`: testes automatizados da animação e do instalador.
-- `GUIA_CODIGO.md`: explicação dos principais trechos para estudo.
-- `ROTEIRO_APRESENTACAO.md`: roteiro de demonstração.
+- main.py: ponto de entrada; cria a janela, os modelos, a câmera, as luzes e a renderização.
+- animacao.py: controla as etapas, os tempos, a porta e as posições do embarque.
+- assets/asfalto.png: textura aplicada ao chão.
+- requirements.txt: dependências Python.
+- py3d/: componentes do framework e shaders usados.
+- instalar_framework.py: instala o framework quando necessário.
+- tests/: testes automatizados da animação e do instalador.
+- GUIA_CODIGO.md: explicação do código para estudo.
+- ROTEIRO_APRESENTACAO.md: roteiro de demonstração.
 
 ## Instalação no Windows
 
 Requer Python 3.11 e conexão com a internet na primeira instalação.
 
-1. Baixe este repositório pelo GitHub (**Code > Download ZIP**) ou clone o projeto:
-   ```bash
+1. Clone o repositório:
    git clone https://github.com/vinicius589/computacao-grafica-caracol-onibus.git
    cd computacao-grafica-caracol-onibus
-   ```
-2. Execute `INICIAR.bat` na pasta do projeto.
 
-O BAT cria um ambiente virtual, instala as dependências, prepara o framework Py3D e inicia a cena. Caso uma etapa falhe, ele interrompe a execução e mostra a mensagem correspondente.
+2. Execute INICIAR.bat.
 
-Para rodar os testes, execute `TESTAR.bat` depois da instalação.
+O BAT cria o ambiente virtual, instala as dependências, prepara o framework e abre a aplicação pelo arquivo main.py.
+
+Para executar os testes, use TESTAR.bat.
+
+## Executar diretamente pelo main.py
+
+Depois de instalar as dependências e o framework, execute:
+
+    .venv\Scripts\python.exe main.py
+
+O arquivo main.py também possui uma função main(), que inicia a aplicação.
 
 ## Controles
 
@@ -44,19 +51,20 @@ Para rodar os testes, execute `TESTAR.bat` depois da instalação.
 - T/G: olhar para cima e para baixo.
 - Espaço: pausar ou retomar a animação.
 
-## Requisitos gráficos destacados
+## Recursos gráficos
 
-- Modelos compostos por caixas, esferas, elipsoides e cilindros.
+- Modelos montados por composição de caixas, esferas, cilindros e elipsoides.
 - Translação, rotação, escala e hierarquia de objetos.
 - Câmera em perspectiva controlada pelo teclado.
 - Textura de imagem com coordenadas UV.
 - Luz ambiente e luz direcional, materiais Phong e vetores normais.
-- Shadow mapping por passagem de profundidade do framework.
-- Animação baseada em delta time, com pausa e retomada.
+- Shadow mapping por passagem de profundidade.
+- Animação com delta time e pausa.
+- Embarque coordenado: o caracol atravessa a porta, fica dentro da cabine e acompanha o ônibus durante a partida.
 
 ## Fontes
 
-- STEMKOSKI, Lee; PASCALE, Michael. *Developing Graphics Frameworks with Python and OpenGL*. CRC Press, 2022. DOI: https://doi.org/10.1201/9781003181378.
-- Repositório público de exemplos associado ao livro: https://github.com/ax-va/PyOpenGL-Pygame-Stemkoski-Pascale-2021 (revisão `f3029550425385f90e0d66ba7f73bb310112039b`).
+- STEMKOSKI, Lee; PASCALE, Michael. Developing Graphics Frameworks with Python and OpenGL. CRC Press, 2022. DOI: https://doi.org/10.1201/9781003181378.
+- Repositório público de exemplos associado ao livro: https://github.com/ax-va/PyOpenGL-Pygame-Stemkoski-Pascale-2021 (revisão f3029550425385f90e0d66ba7f73bb310112039b).
 
-O projeto foi desenvolvido com apoio de IA na estruturação, comentários, testes e documentação. Os integrantes devem executar e compreender o código antes da apresentação.
+O projeto foi desenvolvido com apoio de IA na estruturação, comentários, testes e documentação. Os integrantes devem revisar, executar e compreender o código antes da apresentação.
