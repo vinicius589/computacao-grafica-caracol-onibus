@@ -4,24 +4,29 @@
 class SequenciaAnimacao:
     """Guarda as posicoes e a etapa atual da animacao."""
 
-    # Posicoes usadas na cena.
+    # Posicoes do onibus.
     ONIBUS_X = -2.3
     ONIBUS_Z_INICIAL = 6.0
     ONIBUS_Z_PARADA = 1.2
     ONIBUS_Z_FINAL = -6.0
 
+    # Posicoes do caracol.
     CARACOL_X_INICIAL = 3.6
     CARACOL_X_PARADA = 0.25
-    CARACOL_Y_CHAO = -0.07
-    CARACOL_Y_INTERIOR = 0.92
+    CARACOL_X_RAMPA = -1.05
+    CARACOL_Y_CHAO = 0.15
+    CARACOL_Y_INTERIOR = 1.14
     CARACOL_ANGULO_FORA = 3.141592653589793
     CARACOL_ANGULO_DENTRO = 1.5707963267948966
 
-    # Tempo de cada etapa, em segundos.
+    # Parte do embarque usada para chegar ate a rampa.
+    PROGRESSO_ATE_RAMPA = 0.55
+
+    # Duracao de cada parte da animacao, em segundos.
     DURACOES = {
         "aproximacao": 3.35,
         "abrir_porta": 0.8,
-        "embarque": 2.2,
+        "embarque": 3.0,
         "espera_embarcado": 0.8,
         "fechar_porta": 0.8,
         "partida": 3.0,
@@ -44,34 +49,42 @@ class SequenciaAnimacao:
         self.embarcado = False
         self.angulo_caracol = self.CARACOL_ANGULO_FORA
 
+    def limitar_progresso(self, progresso):
+        """Mantem o progresso entre zero e um."""
+        return max(0.0, min(1.0, progresso))
+
+    def suavizar(self, progresso):
+        """Deixa o inicio e o fim do movimento mais suaves."""
+        progresso = self.limitar_progresso(progresso)
+        return progresso * progresso * (3 - 2 * progresso)
+
     def interpolar(self, inicio, fim, progresso):
-        """Calcula um valor entre inicio e fim sem erro nos extremos."""
-        if progresso <= 0:
+        """Calcula uma posicao entre o inicio e o fim."""
+        progresso = self.limitar_progresso(progresso)
+
+        # Garante os valores exatos no inicio e no fim do movimento.
+        if progresso == 0:
             return inicio
-        if progresso >= 1:
+        if progresso == 1:
             return fim
+
         return inicio + (fim - inicio) * progresso
 
     def atualizar_posicoes(self):
-        """Calcula as posicoes de acordo com a etapa atual."""
+        """Atualiza as posicoes de acordo com a etapa atual."""
         duracao = self.DURACOES[self.etapa]
-
-        # Garante o valor exato no fim da etapa.
-        if self.tempo_etapa >= duracao - 0.000000001:
-            progresso = 1.0
-        else:
-            progresso = max(0.0, self.tempo_etapa / duracao)
+        progresso = self.limitar_progresso(self.tempo_etapa / duracao)
 
         if self.etapa == "aproximacao":
             # O caracol caminha ate o ponto.
             self.x_caracol = self.interpolar(
                 self.CARACOL_X_INICIAL,
                 self.CARACOL_X_PARADA,
-                progresso
+                self.suavizar(progresso)
             )
 
-            # O onibus chega antes e espera o caracol.
-            progresso_onibus = min(self.tempo_etapa / 2.4, 1.0)
+            # O onibus chega primeiro e espera o caracol.
+            progresso_onibus = self.suavizar(self.tempo_etapa / 2.4)
             self.z_onibus = self.interpolar(
                 self.ONIBUS_Z_INICIAL,
                 self.ONIBUS_Z_PARADA,
@@ -82,23 +95,40 @@ class SequenciaAnimacao:
             self.porta = progresso
 
         elif self.etapa == "embarque":
-            # O caracol atravessa a porta e sobe para o piso do onibus.
-            self.x_caracol = self.interpolar(
-                self.CARACOL_X_PARADA,
-                self.ONIBUS_X,
-                progresso
-            )
-            self.y_caracol = self.interpolar(
-                self.CARACOL_Y_CHAO,
-                self.CARACOL_Y_INTERIOR,
-                progresso
-            )
+            # Primeiro, o caracol anda ate a entrada sem subir do chao.
+            if progresso <= self.PROGRESSO_ATE_RAMPA:
+                progresso_entrada = self.suavizar(
+                    progresso / self.PROGRESSO_ATE_RAMPA
+                )
+                self.x_caracol = self.interpolar(
+                    self.CARACOL_X_PARADA,
+                    self.CARACOL_X_RAMPA,
+                    progresso_entrada
+                )
+                self.y_caracol = self.CARACOL_Y_CHAO
 
-            # Ao entrar, o caracol vira para a frente do onibus.
+            # Depois, sobe pela rampa e entra completamente na cabine.
+            else:
+                progresso_rampa = self.suavizar(
+                    (progresso - self.PROGRESSO_ATE_RAMPA)
+                    / (1.0 - self.PROGRESSO_ATE_RAMPA)
+                )
+                self.x_caracol = self.interpolar(
+                    self.CARACOL_X_RAMPA,
+                    self.ONIBUS_X,
+                    progresso_rampa
+                )
+                self.y_caracol = self.interpolar(
+                    self.CARACOL_Y_CHAO,
+                    self.CARACOL_Y_INTERIOR,
+                    progresso_rampa
+                )
+
+            # O caracol vira para a frente enquanto termina de embarcar.
             self.angulo_caracol = self.interpolar(
                 self.CARACOL_ANGULO_FORA,
                 self.CARACOL_ANGULO_DENTRO,
-                progresso
+                self.suavizar(progresso)
             )
 
         elif self.etapa == "espera_embarcado":
@@ -108,11 +138,11 @@ class SequenciaAnimacao:
             self.porta = 1.0 - progresso
 
         elif self.etapa == "partida":
-            # O caracol ja esta dentro e acompanha o grupo do onibus.
+            # O caracol ja esta preso ao grupo do onibus.
             self.z_onibus = self.interpolar(
                 self.ONIBUS_Z_PARADA,
                 self.ONIBUS_Z_FINAL,
-                progresso
+                self.suavizar(progresso)
             )
 
         elif self.etapa == "reiniciar":
@@ -129,8 +159,8 @@ class SequenciaAnimacao:
             "partida": "reiniciar",
         }
 
+        # Ao terminar o embarque, o caracol passa a ser passageiro.
         if self.etapa == "embarque":
-            # A partir daqui, o caracol fica preso ao grupo do onibus.
             self.embarcado = True
 
         if self.etapa == "reiniciar":
@@ -142,22 +172,20 @@ class SequenciaAnimacao:
         self.atualizar_posicoes()
 
     def atualizar(self, delta_tempo):
-        """Avanca a animacao usando o tempo decorrido, sem depender do FPS."""
+        """Avanca a animacao pelo tempo, sem depender do FPS."""
         if delta_tempo <= 0:
             return
 
         tempo_restante = delta_tempo
 
-        # Pequenas sobras numericas sao descartadas para nao iniciar a
-        # proxima etapa com um tempo quase zero.
+        # Aproveita o tempo que sobrar quando uma etapa terminar.
         while tempo_restante > 0.000000001:
             duracao = self.DURACOES[self.etapa]
             falta = duracao - self.tempo_etapa
-
             passo = min(tempo_restante, falta)
+
             self.tempo_etapa += passo
             tempo_restante -= passo
-
             self.atualizar_posicoes()
 
             if self.tempo_etapa >= duracao - 0.000000001:
