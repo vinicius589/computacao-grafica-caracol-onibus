@@ -1,115 +1,110 @@
 # Guia para entender o código
 
-Este guia explica os trechos mais importantes em linguagem simples. Para apresentar, comece por main.py e depois mostre a lógica de animacao.py.
+Este guia explica o projeto em linguagem simples. Para apresentar, comece pelo final de `main.py` e depois mostre `animacao.py`.
 
-## 1. Como iniciar o programa
+## 1. Como executar
 
-No final de main.py existe uma função main(). Ela cria a aplicação e chama run(), que pertence ao framework. O framework abre a janela e chama os métodos initialize() e update().
+Abra a pasta completa no PyCharm, configure o Python 3.11, abra `main.py` e clique em **Run**.
 
-A condição no final do arquivo faz a função main() ser executada quando main.py é aberto diretamente.
+Antes de abrir a janela, o próprio arquivo verifica se Pygame, PyOpenGL e NumPy estão instalados. Caso falte alguma dessas bibliotecas, ele chama o pip usando o mesmo interpretador do PyCharm. A pasta `py3d` já está incluída no projeto.
 
 ## 2. Como o código está dividido
 
-- main.py: monta e desenha a cena.
-- animacao.py: controla a ordem dos movimentos.
-- py3d/: contém as classes do framework, os materiais e os shaders.
-- assets/asfalto.png: textura do chão.
-- tests/: verifica a sequência sem precisar abrir a janela 3D.
+- `main.py`: monta e desenha a cena.
+- `animacao.py`: controla a ordem dos movimentos.
+- `py3d/`: contém as classes do framework, as geometrias, os materiais e os shaders.
+- `assets/asfalto.png`: textura do chão.
+- `tests/test_animacao.py`: testa a lógica usando o módulo `unittest`, que já vem com Python.
 
 ## 3. Funções principais de main.py
 
-- criar_material(cor, textura): prepara a cor e a iluminação de uma peça.
-- adicionar_peca(grupo, geometria, material, posicao): cria uma malha e coloca no grupo.
-- initialize(): prepara câmera, luzes, materiais, cenário e personagens.
-- criar_ambiente(): monta a rua e o ponto de ônibus.
-- criar_onibus(): monta a carroceria, as rodas, a porta e as aberturas da cabine.
-- criar_caracol(): monta corpo, casco, sensor e antenas.
-- update(): atualiza os movimentos e chama o renderizador.
-- main(): inicia a aplicação.
+- `preparar_bibliotecas()`: verifica e instala as três bibliotecas permitidas, se alguma estiver faltando.
+- `criar_material(cor, textura)`: prepara a cor e a iluminação de uma peça.
+- `adicionar_peca(grupo, geometria, material, posicao)`: cria uma peça e coloca no grupo.
+- `initialize()`: prepara câmera, luzes, materiais, cenário e personagens.
+- `criar_ambiente()`: monta a rua e o ponto de ônibus.
+- `criar_onibus()`: monta a carroceria, as janelas, as rodas e as duas folhas da porta.
+- `criar_caracol()`: monta corpo, casco, sensor e antenas.
+- `update()`: atualiza os movimentos e chama o renderizador.
+- `main()`: cria a aplicação e inicia o programa.
 
-## 4. Como o ônibus deixa o caracol visível
+## 4. Como a porta funciona
 
-A carroceria inferior forma o piso. A lateral de embarque tem duas folhas articuladas que giram para fora em eixos presos ao próprio ônibus. A entrada fica livre no centro. Uma rampa inclinada liga o chão ao piso da cabine. O teto tem partes nas extremidades e uma abertura no centro para a câmera mostrar o caracol.
+Cada folha da porta é um grupo separado, adicionado ao grupo do ônibus. O ponto de origem de cada grupo fica na dobradiça. O valor da animação é convertido em um ângulo de rotação.
 
-O caracol primeiro caminha até a entrada. Depois sobe pela rampa, chega ao piso e fica dentro da cabine.
+A cada quadro, o código monta novamente a matriz de posição e rotação de cada folha. Assim, a rotação é calculada a partir do valor atual da animação, sem acumular pequenos giros de quadros anteriores.
 
-## 5. Por que o caracol acompanha o ônibus
+## 5. Como o caracol fica visível
 
-O caracol é adicionado ao grupo do ônibus com a chamada self.onibus.add(self.caracol).
+O piso fica na parte inferior do ônibus. A entrada lateral permanece aberta quando as duas folhas giram para fora, e a rampa liga o chão ao piso interno. A abertura central do teto também permite observar o personagem.
 
-Isso cria uma relação hierárquica. Antes de embarcar, o programa calcula a posição local do caracol para que ele caminhe até a porta. Depois do embarque, o caracol fica na posição local fixa [0, altura, 0].
+O banco, a placa e as árvores ficam atrás do percurso, para não cobrir o caracol na visão inicial da câmera. Depois de embarcar, o caracol fica ligeiramente deslocado para o lado da abertura, sem sair da cabine.
 
-Como essa posição é relativa ao grupo do ônibus, quando o ônibus se desloca, o caracol acompanha automaticamente. A escala do personagem foi ajustada para ele caber na porta e na cabine.
+## 6. Por que o caracol acompanha o ônibus
 
-## 6. Como funciona animacao.py
+O caracol é adicionado ao grupo do ônibus com `self.onibus.add(self.caracol)`.
 
-A classe SequenciaAnimacao guarda:
+Isso cria uma hierarquia. Antes do embarque, o programa calcula a posição do caracol em relação ao ônibus para que ele caminhe até a porta. Depois de entrar, sua posição local fica fixa dentro da cabine.
 
-- x_caracol: posição do caracol no percurso.
-- y_caracol: altura do caracol.
-- z_onibus: posição do ônibus.
-- porta: abertura da porta, de 0 (fechada) a 1 (aberta).
-- embarcado: informa se o caracol já está dentro.
-- etapa: parte atual da sequência.
-- tempo_etapa: tempo passado na etapa atual.
+Quando o ônibus se desloca, o caracol acompanha automaticamente porque faz parte do grupo dele.
+
+## 7. Como funciona animacao.py
+
+A classe `SequenciaAnimacao` guarda:
+
+- `x_caracol`: posição do caracol no percurso.
+- `y_caracol`: altura do caracol.
+- `z_onibus`: posição do ônibus.
+- `porta`: abertura da porta, de 0 (fechada) a 1 (aberta).
+- `embarcado`: informa se o caracol já terminou de entrar.
+- `etapa`: parte atual da sequência.
+- `tempo_etapa`: tempo passado nessa parte.
 
 As etapas são:
 
-1. aproximacao: o ônibus chega e espera o caracol no ponto.
-2. abrir_porta: as duas folhas giram para fora e liberam a entrada.
-3. embarque: o caracol caminha até a porta e depois sobe pela rampa até o piso da cabine.
-4. espera_embarcado: o caracol já está dentro e o ônibus aguarda.
-5. fechar_porta: as duas folhas voltam aos batentes depois do embarque.
-6. partida: o ônibus sai com o caracol dentro.
-7. reiniciar: pausa curta antes de repetir a cena.
+1. `aproximacao`: o ônibus chega e espera o caracol.
+2. `abrir_porta`: as duas folhas giram para fora.
+3. `embarque`: o caracol caminha até a entrada e sobe pela rampa.
+4. `espera_embarcado`: o caracol já está dentro e o ônibus aguarda.
+5. `fechar_porta`: as duas folhas voltam aos batentes.
+6. `partida`: o ônibus sai com o caracol dentro.
+7. `reiniciar`: pequena pausa antes de repetir.
 
-A função interpolar(inicio, fim, progresso) calcula posições intermediárias. Assim, o movimento é gradual, sem saltar diretamente de uma posição para outra.
+A função `interpolar(inicio, fim, progresso)` calcula uma posição entre dois pontos. A função `suavizar(progresso)` deixa o começo e o fim do movimento mais graduais.
 
-## 7. O que é delta time
+## 8. O que é delta time
 
-delta_time é o tempo decorrido desde o quadro anterior. A animação usa esse valor para avançar o tempo da etapa. Assim, a velocidade não depende diretamente da quantidade de quadros por segundo.
+`delta_time` é o tempo passado desde o quadro anterior. A animação usa esse valor para calcular o movimento. Assim, ela não depende diretamente da quantidade de quadros por segundo.
 
-O método atualizar() também aproveita o tempo que sobrar de um quadro longo na etapa seguinte. Isso evita que uma atualização demorada deixe a sequência atrasada.
+## 9. Transformações e hierarquia
 
-## 8. Transformações e hierarquia
+- Translação muda a posição: `set_position()`.
+- Rotação muda a orientação: `rotate_x()`, `rotate_y()` e `rotate_z()`.
+- Escala muda o tamanho: `scale()`.
+- Hierarquia organiza objetos em grupos: `self.onibus.add(self.caracol)`.
 
-- Translação muda a posição: set_position().
-- Rotação muda a orientação: rotate_x(), rotate_y() e rotate_z().
-- Escala muda o tamanho: scale().
-- Hierarquia organiza objetos dentro de grupos: self.onibus.add(self.caracol).
+## 10. Câmera, pausa, textura, luz e sombra
 
-## 9. Câmera, pausa e controles
+A câmera usa perspectiva e o `MovementRig` lê as teclas. Espaço altera a variável `pausado`: a animação para, mas a câmera continua funcionando.
 
-A câmera usa perspectiva e o MovementRig lê as teclas. Espaço alterna a variável pausado: a animação para, mas a câmera continua funcionando.
+A textura `assets/asfalto.png` é carregada por `Texture` e aplicada ao chão. A luz ambiente ilumina a cena de maneira geral; a luz direcional representa uma fonte de luz em uma direção. O material Phong utiliza as normais das geometrias para calcular a iluminação.
 
-## 10. Textura, iluminação e sombras
-
-O arquivo assets/asfalto.png é carregado por Texture e aplicado ao chão. As geometrias fornecem coordenadas UV.
-
-A luz ambiente ilumina a cena de forma geral. A luz direcional representa uma fonte de luz em uma direção. O material Phong usa as normais dos vértices para calcular a iluminação.
-
-O shadow mapping faz uma passagem pela câmera da luz e grava a profundidade dos objetos. Depois, o shader Phong consulta esse mapa para decidir se um ponto está atrás de outro objeto e deve receber sombra.
-
-Os arquivos principais são:
-
-- py3d/material/phong.py: shader Phong e leitura do mapa de sombra.
-- py3d/material/depth.py: shader da passagem de profundidade.
-- py3d/core_ext/renderer.py: executa as passagens de sombra e de imagem.
-- py3d/light/shadow.py: configura a câmera e a textura de sombra.
+O shadow mapping faz uma passagem pela câmera da luz e grava a profundidade dos objetos. Depois, o shader consulta esse mapa para calcular as sombras.
 
 ## 11. Perguntas que podem aparecer
 
 **Como sabemos que o caracol está dentro?**
-A posição dele passa pela entrada e pela rampa. Ao terminar essa etapa, fica em uma posição local fixa dentro do grupo do ônibus.
+
+Ele termina o movimento na posição interna da cabine. Depois disso, a variável `embarcado` fica verdadeira e ele passa a acompanhar o grupo do ônibus.
 
 **Por que o caracol acompanha o ônibus?**
-Porque ele é filho do grupo do ônibus. A transformação do pai também afeta os filhos.
 
-**Como evitamos que a porta feche antes da entrada?**
-O controlador só passa para a etapa de fechar depois de terminar a etapa de embarque. O código transforma o valor de abertura em um ângulo e aplica a rotação aos dois grupos que formam as portas.
+Porque ele é filho do grupo do ônibus. A transformação do grupo também afeta os objetos que estão dentro dele.
+
+**Como a porta abre sem sair do lugar?**
+
+Cada folha gira no próprio grupo, cujo ponto de origem está na dobradiça. A posição e a rotação são recalculadas a cada quadro.
 
 **Como a animação não depende do FPS?**
-Ela usa o tempo decorrido, chamado delta time, e calcula o progresso de cada etapa.
 
-**Qual a diferença entre iluminação e sombra?**
-A iluminação calcula como a luz atinge a superfície. A sombra projetada verifica se outro objeto bloqueia a luz naquele ponto.
+Ela usa o tempo decorrido, chamado `delta_time`, para calcular o progresso de cada etapa.
