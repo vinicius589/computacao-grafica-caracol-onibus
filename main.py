@@ -3,7 +3,7 @@
 # Bibliotecas usadas para criar a cena.
 # Se alguma estiver faltando, o proprio main.py instala antes de iniciar.
 
-import importlib.util
+import importlib
 import subprocess
 import sys
 from pathlib import Path
@@ -12,56 +12,114 @@ from pathlib import Path
 PASTA_PROJETO = Path(__file__).resolve().parent
 
 
-def preparar_bibliotecas():
-    """Confere o Python e instala Pygame, PyOpenGL e NumPy se faltarem."""
+def obter_pacotes_compativeis():
+    """Escolhe versoes das bibliotecas conforme a versao do Python."""
 
-    # As versoes fixadas do projeto foram preparadas para Python 3.11.
-    # Isso evita que o pip tente compilar o Pygame em um Python incompativel.
-    if sys.version_info[:2] != (3, 11):
-        versao_atual = f"{sys.version_info.major}.{sys.version_info.minor}"
+    versao = sys.version_info[:2]
+    major, minor = versao
+
+    if major != 3 or minor < 6 or minor > 15:
+        versao_atual = "{}.{}".format(major, minor)
         raise SystemExit(
-            "Este projeto precisa do Python 3.11. "
-            f"O interpretador selecionado esta usando Python {versao_atual}. "
-            "No PyCharm, selecione um interpretador Python 3.11 de 64 bits "
-            "e execute main.py novamente."
+            "Este projeto aceita Python de 3.6 a 3.15. "
+            "A versao selecionada e {}. "
+            "Python 3.16 ainda nao possui todas as bibliotecas compativeis "
+            "necessarias para esta cena.".format(versao_atual)
         )
 
-    bibliotecas = {
-        "pygame": "pygame==2.5.2",
-        "OpenGL": "PyOpenGL==3.1.7",
-        "numpy": "numpy==1.26.4"
+    # Python antigo precisa de versoes antigas do NumPy.
+    if minor == 6:
+        numpy = "numpy==1.19.5"
+    elif minor == 7:
+        numpy = "numpy==1.21.6"
+    elif minor == 8:
+        numpy = "numpy==1.24.4"
+    elif minor <= 12:
+        numpy = "numpy==1.26.4"
+    elif minor <= 14:
+        numpy = "numpy==2.4.6"
+    else:
+        numpy = "numpy==2.5.4"
+
+    # O Pygame oficial tem pacotes prontos ate Python 3.13.
+    # Para Python 3.14 e 3.15, usamos Pygame Community Edition,
+    # que continua sendo importado no codigo como pygame.
+    if minor <= 12:
+        pygame = "pygame==2.5.2"
+    elif minor == 13:
+        pygame = "pygame==2.6.1"
+    else:
+        pygame = "pygame-ce==2.5.8"
+
+    return {
+        "pygame": pygame,
+        "OpenGL": "PyOpenGL==3.1.10",
+        "numpy": numpy
     }
 
+
+def preparar_bibliotecas():
+    """Confere e instala as bibliotecas adequadas ao Python selecionado."""
+
+    bibliotecas = obter_pacotes_compativeis()
     faltando = []
 
+    # Testa o import real, nao apenas a existencia da pasta da biblioteca.
+    # Assim tambem identificamos pacotes que nao funcionam neste Python.
     for modulo, pacote in bibliotecas.items():
-        if importlib.util.find_spec(modulo) is None:
+        try:
+            importlib.import_module(modulo)
+        except Exception:
             faltando.append(pacote)
 
     if not faltando:
+        print(
+            "Bibliotecas prontas para Python {}.{}.".format(
+                sys.version_info.major, sys.version_info.minor
+            )
+        )
         return
 
-    print("Instalando as bibliotecas necessarias para o projeto...")
+    print(
+        "Preparando as bibliotecas para Python {}.{}...".format(
+            sys.version_info.major, sys.version_info.minor
+        )
+    )
 
     try:
-        # O pip faz parte do Python. Se nao estiver disponivel, ativa pelo ensurepip.
-        if importlib.util.find_spec("pip") is None:
+        # Ativa o pip caso ele nao esteja disponivel neste interpretador.
+        try:
+            importlib.import_module("pip")
+        except ImportError:
             subprocess.run(
                 [sys.executable, "-m", "ensurepip", "--upgrade"],
                 check=True
             )
 
-        # Instala somente as tres bibliotecas usadas na disciplina.
+        # Python 3.6 precisa da ultima linha do pip que ainda o suporta.
+        if sys.version_info[:2] == (3, 6):
+            subprocess.run(
+                [
+                    sys.executable, "-m", "pip", "install",
+                    "pip==21.3.1"
+                ],
+                check=True
+            )
+
+        # Instala somente pacotes binarios compativeis, sem compilacao local.
         subprocess.run(
-            [sys.executable, "-m", "pip", "install", "--only-binary=:all:", *faltando],
+            [
+                sys.executable, "-m", "pip", "install",
+                "--only-binary=:all:", "--upgrade", *faltando
+            ],
             check=True
         )
 
     except (subprocess.CalledProcessError, OSError) as erro:
         raise SystemExit(
-            "Nao foi possivel instalar as bibliotecas. "
-            "Confira a internet e o interpretador Python do PyCharm. "
-            f"Detalhes: {erro}"
+            "Nao foi possivel preparar as bibliotecas para este Python. "
+            "Confira a conexao com a internet e a arquitetura de 64 bits. "
+            "Detalhes: {}".format(erro)
         )
 
     print("Bibliotecas instaladas com sucesso.")
