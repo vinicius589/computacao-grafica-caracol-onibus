@@ -18,7 +18,7 @@ A câmera permite observar a cabine pela entrada lateral e pela abertura no teto
 
 ## 3. Como executar
 
-Abra a pasta completa no PyCharm, configure Python 3.11, abra `main.py` e clique em **Run**. Na primeira execução, o arquivo instala automaticamente Pygame, PyOpenGL e NumPy se estiverem faltando.
+Abra a pasta completa no PyCharm, selecione uma versão do Python já instalada (de 3.6 a 3.15), abra `main.py` e clique em **Run**. Na primeira execução, o arquivo identifica a versão selecionada e instala automaticamente as versões compatíveis de Pygame, PyOpenGL e NumPy, se estiverem faltando. Não é necessário trocar para Python 3.11.
 
 ## 4. Controles
 
