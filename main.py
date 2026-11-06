@@ -220,7 +220,7 @@ class TrabalhoComputacaoGrafica(Base):
         # Porta: quando desliza para tras, libera a abertura central.
         self.porta_onibus = self.adicionar_peca(
             self.onibus, BoxGeometry(0.055, 1.06, 0.78), self.material_azul,
-            [1.02, 1.44, -0.05]
+            [1.08, 1.44, -0.05]
         )
 
         # Rodas e cubos das rodas.
@@ -331,7 +331,7 @@ class TrabalhoComputacaoGrafica(Base):
 
         # A porta desliza para tras quando abre.
         self.porta_onibus.set_position([
-            1.02, 1.44, -0.05 + self.animacao.porta * 1.15
+            1.08, 1.44, -0.05 + self.animacao.porta * 1.15
         ])
 
         # As rodas giram somente enquanto o onibus esta andando.
