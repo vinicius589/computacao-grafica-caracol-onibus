@@ -29,7 +29,7 @@ A condição no final do arquivo faz a função main() ser executada quando main
 
 ## 4. Como o ônibus deixa o caracol visível
 
-A carroceria inferior forma o piso. Na porta existe uma rampa inclinada que liga o chão ao piso do ônibus. A lateral de embarque usa colunas separadas, deixando a entrada visível, e o teto usa barras para permitir a visualização da cabine.
+A carroceria inferior forma o piso. A lateral de embarque tem duas folhas articuladas que giram para fora em eixos presos ao próprio ônibus. A entrada fica livre no centro. Uma rampa inclinada liga o chão ao piso da cabine. O teto tem partes nas extremidades e uma abertura no centro para a câmera mostrar o caracol.
 
 O caracol primeiro caminha até a entrada. Depois sobe pela rampa, chega ao piso e fica dentro da cabine.
 
@@ -56,10 +56,10 @@ A classe SequenciaAnimacao guarda:
 As etapas são:
 
 1. aproximacao: o ônibus chega e espera o caracol no ponto.
-2. abrir_porta: a porta desliza e libera a entrada.
+2. abrir_porta: as duas folhas giram para fora e liberam a entrada.
 3. embarque: o caracol caminha até a porta e depois sobe pela rampa até o piso da cabine.
 4. espera_embarcado: o caracol já está dentro e o ônibus aguarda.
-5. fechar_porta: a porta fecha depois do embarque.
+5. fechar_porta: as duas folhas voltam aos batentes depois do embarque.
 6. partida: o ônibus sai com o caracol dentro.
 7. reiniciar: pausa curta antes de repetir a cena.
 
@@ -106,7 +106,7 @@ A posição dele passa pela entrada e pela rampa. Ao terminar essa etapa, fica e
 Porque ele é filho do grupo do ônibus. A transformação do pai também afeta os filhos.
 
 **Como evitamos que a porta feche antes da entrada?**
-O controlador só passa para a etapa de fechar depois de terminar a etapa de embarque.
+O controlador só passa para a etapa de fechar depois de terminar a etapa de embarque. O código transforma o valor de abertura em um ângulo e aplica a rotação aos dois grupos que formam as portas.
 
 **Como a animação não depende do FPS?**
 Ela usa o tempo decorrido, chamado delta time, e calcula o progresso de cada etapa.
