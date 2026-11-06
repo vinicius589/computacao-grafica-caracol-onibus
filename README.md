@@ -23,6 +23,8 @@ Na primeira execução, o próprio `main.py` identifica a versão do Python sele
 
 A pasta `py3d` já acompanha o projeto. Não é necessário executar instalador separado, arquivo BAT ou baixar outro framework.
 
+Ao compactar ou enviar o projeto, não inclua as pastas `.venv`, `.venv311`, `venv` ou `.idea`. Elas são configurações locais do computador e não precisam acompanhar os arquivos-fonte. O arquivo `.gitignore` já evita que essas pastas entrem no repositório.
+
 ## Bibliotecas utilizadas
 
 - Python 3.6 a 3.15, em Windows de 64 bits.
@@ -30,7 +32,7 @@ A pasta `py3d` já acompanha o projeto. Não é necessário executar instalador 
 - PyOpenGL: acesso à renderização OpenGL.
 - NumPy: operações com matrizes e vetores.
 
-As versões dos pacotes são escolhidas automaticamente conforme a versão do Python. Python 3.16 ainda não está incluído porque as bibliotecas necessárias não oferecem, neste momento, uma combinação estável de pacotes binários para ele.
+As versões dos pacotes são escolhidas automaticamente conforme a versão do Python. Python 3.16 ainda não está incluído porque as bibliotecas necessárias não oferecem, neste momento, uma combinação estável de pacotes binários para ele. As versões 3.6 a 3.10 estão fora do suporte oficial de segurança do Python; a compatibilidade com elas é mantida apenas para atender ambientes antigos.
 
 Não há dependências de pytest ou de outras bibliotecas externas.
 
