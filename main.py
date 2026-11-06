@@ -360,15 +360,16 @@ class TrabalhoComputacaoGrafica(Base):
         # As extremidades ficam proximas do chao e da entrada do onibus.
         rampa = self.adicionar_peca(
             self.onibus, BoxGeometry(1.50, 0.12, 1.42), self.material_metal,
-            [1.55, 0.66, 0]
+            [1.55, 0.50, 0]
         )
         rampa.rotate_z(-0.73)
 
         # Faixas transversais ajudam a destacar os pontos de apoio da rampa.
+        # Elas ficam ligeiramente acima da superficie para permanecer visiveis.
         for posicao in [
-            [1.83, 0.41, 0],
-            [1.55, 0.66, 0],
-            [1.27, 0.91, 0]
+            [1.88, 0.31, 0],
+            [1.60, 0.56, 0],
+            [1.32, 0.81, 0]
         ]:
             faixa = self.adicionar_peca(
                 self.onibus, BoxGeometry(0.10, 0.04, 1.36),
