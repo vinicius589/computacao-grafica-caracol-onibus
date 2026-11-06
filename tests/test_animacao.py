@@ -63,7 +63,7 @@ class TestarAnimacao(unittest.TestCase):
         avancar_ate(animacao, "espera_embarcado")
 
         self.assertTrue(animacao.embarcado)
-        self.assertEqual(animacao.x_caracol, animacao.ONIBUS_X)
+        self.assertEqual(animacao.x_caracol, animacao.CARACOL_X_INTERIOR)
         self.assertEqual(animacao.y_caracol, animacao.CARACOL_Y_INTERIOR)
         self.assertEqual(animacao.angulo_caracol, animacao.CARACOL_ANGULO_DENTRO)
         self.assertEqual(animacao.porta, 1.0)
