@@ -137,9 +137,11 @@ class Object3D:
 
     def set_position(self, position):
         """ Set the local position of the object """
-        self._matrix.itemset((0, 3), position[0])
-        self._matrix.itemset((1, 3), position[1])
-        self._matrix.itemset((2, 3), position[2])
+        # Atualiza diretamente as coordenadas na matriz de transformação.
+        # A atribuição por índice é compatível com NumPy 2.x.
+        self._matrix[0, 3] = position[0]
+        self._matrix[1, 3] = position[1]
+        self._matrix[2, 3] = position[2]
 
     def look_at(self, target_position):
         self._matrix = Matrix.make_look_at(self.global_position, target_position)
