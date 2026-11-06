@@ -6,16 +6,16 @@ Projeto acadêmico de Computação Gráfica da UNIPAC, desenvolvido em Python co
 
 A cena mostra um ponto de ônibus com calçada, cobertura, banco e placa posicionados fora do caminho do personagem. O ônibus amarelo tem carroceria, janelas, rodas, para-choques e duas folhas articuladas na entrada.
 
-O caracol robótico chega ao ponto, espera o ônibus, caminha até a entrada lateral, sobe pela rampa e entra na cabine. As portas fecham e o ônibus parte levando o caracol.
+O caracol robótico chega ao ponto, espera o ônibus, caminha até a entrada lateral, sobe pela rampa metálica com três faixas de apoio e entra na cabine. As portas fecham e o ônibus parte levando o caracol.
 
-O personagem fica um pouco mais próximo da lateral aberta para permanecer visível. O banco, a placa e as árvores ficam na parte de trás do cenário, sem bloquear o embarque.
+O personagem teve seu tamanho ajustado para ficar proporcional ao ônibus e permanecer visível durante o embarque. O banco, a placa e as árvores ficam na parte de trás do cenário, sem bloquear o percurso.
 
 ## Como abrir no PyCharm
 
 1. Baixe o repositório pelo botão **Code > Download ZIP** e extraia a pasta, ou clone o repositório.
 2. Abra o PyCharm e escolha **Open**.
 3. Selecione a pasta completa `computacao-grafica-caracol-onibus`.
-4. Selecione um interpretador Python 3 já instalado no computador (de 3.6 a 3.15).
+4. Selecione um interpretador Python de 3.10 a 3.14 já instalado no computador.
 5. Abra o arquivo `main.py`.
 6. Clique no botão **Run** (Executar).
 
@@ -27,12 +27,12 @@ Ao compactar ou enviar o projeto, não inclua as pastas `.venv`, `.venv311`, `ve
 
 ## Bibliotecas utilizadas
 
-- Python 3.6 a 3.15, em Windows de 64 bits.
-- Pygame: janela, teclado e controle do tempo. Em Python 3.14 e 3.15, o instalador usa Pygame Community Edition, que mantém o módulo `pygame` utilizado pelo código.
+- Python 3.10 a 3.14, em Windows de 64 bits.
+- Pygame: janela, teclado e controle do tempo. Em Python 3.14, o instalador usa Pygame Community Edition, que mantém o módulo `pygame` utilizado pelo código.
 - PyOpenGL: acesso à renderização OpenGL.
 - NumPy: operações com matrizes e vetores.
 
-As versões dos pacotes são escolhidas automaticamente conforme a versão do Python. Python 3.16 ainda não está incluído porque as bibliotecas necessárias não oferecem, neste momento, uma combinação estável de pacotes binários para ele. As versões 3.6 a 3.10 estão fora do suporte oficial de segurança do Python; a compatibilidade com elas é mantida apenas para atender ambientes antigos.
+As versões dos pacotes são escolhidas automaticamente conforme a versão do Python. A configuração de dependências e a cena foram verificadas no Python 3.14. A seleção de pacotes também contempla Python 3.10, 3.11, 3.12 e 3.13; a execução visual deve ser conferida no computador em que o projeto será apresentado.
 
 Não há dependências de pytest ou de outras bibliotecas externas.
 
