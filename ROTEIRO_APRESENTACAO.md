@@ -1,53 +1,54 @@
-# Roteiro de apresentacao - Computacao Grafica
+# Roteiro de apresentação - Computação Gráfica
 
-## 1. Apresentacao da ideia
+## 1. Apresentação da ideia
 
-Nosso projeto representa um ponto de onibus. Um caracol robotico se aproxima do ponto e interage com um onibus de brinquedo. A ideia e mostrar dois objetos diferentes realizando uma acao coordenada.
+A cena representa um ponto de ônibus. O caracol chega, espera o ônibus, entra pela porta lateral e viaja dentro dele. A interação não é apenas uma aproximação: o embarque acontece e o ônibus parte com o personagem na cabine.
 
-## 2. Demonstracao da cena
+## 2. Demonstração
 
-Mostre o caracol e o onibus na tela. Explique que os modelos foram montados com formas geometricas do framework: caixas, esferas, cilindros e elipsoides.
+1. Mostre o caracol chegando ao ponto.
+2. Mostre o ônibus parando e aguardando.
+3. Mostre a porta deslizando para abrir.
+4. Mostre o caracol atravessando a abertura e entrando na cabine.
+5. Mostre a porta fechando depois que ele entra.
+6. Mostre o ônibus saindo com o caracol dentro.
 
-Deixe a animacao acontecer:
+A câmera permite observar a cabine pelas aberturas laterais e pelo teto em barras.
 
-1. o caracol se aproxima;
-2. o onibus chega e aguarda;
-3. a porta abre;
-4. o caracol movimenta as antenas;
-5. a porta fecha;
-6. o onibus parte.
+## 3. Controles
 
-Explique que o onibus nao parte enquanto a porta nao termina de fechar.
+- W/S, A/D, R/F: movimentar a câmera.
+- Q/E: girar a câmera.
+- T/G: olhar para cima e para baixo.
+- Espaço: pausar e retomar a animação.
 
-## 3. Mostrar os controles
+## 4. Explicação do código
 
-Use W, A, S, D, R e F para movimentar a camera, Q e E para girar e T e G para olhar para cima e para baixo. Pressione Espaco para pausar e retomar a animacao.
+Comece pelo final do main.py e mostre a função main(). Depois explique initialize(), criar_onibus(), criar_caracol() e update().
 
-## 4. Explicar o codigo
+Em seguida, abra animacao.py. Explique as etapas da sequência e mostre que a porta só fecha depois do embarque.
 
-Comece por `animacao.py`. Mostre a classe `SequenciaAnimacao`, as variaveis de posicao, a variavel `etapa` e o metodo `atualizar(delta_tempo)`.
+## 5. Conceitos gráficos
 
-Depois abra `main.py`. Explique que `initialize()` prepara a cena, `criar_onibus()` e `criar_caracol()` montam os modelos, e `update()` atualiza os personagens e chama o renderer.
+- Modelagem por composição de formas geométricas.
+- Translação, rotação, escala e hierarquia.
+- Câmera em perspectiva.
+- Textura com coordenadas UV.
+- Iluminação Phong e vetores normais.
+- Shadow mapping.
+- Animação baseada em delta time.
+- Relação hierárquica: o caracol é filho do ônibus e acompanha a partida.
 
-## 5. Conceitos graficos
+## 6. Pergunta importante
 
-- Transladar e mudar a posicao.
-- Rotacionar e mudar a orientacao.
-- Escalar e mudar o tamanho.
-- A hierarquia organiza as pecas em grupos.
-- A camera em perspectiva e controlada pelo teclado.
-- A textura do asfalto usa coordenadas UV.
-- A iluminacao Phong calcula o efeito da luz sobre as superficies.
-- O shadow mapping grava a profundidade vista pela luz e usa essa informacao para desenhar a sombra projetada.
+**Como o caracol permanece dentro quando o ônibus sai?**
 
-## 6. Divisao da apresentacao
+Ele é adicionado ao grupo do ônibus. Depois de entrar, sua posição local fica fixa dentro da cabine. Quando o grupo do ônibus se desloca, o caracol acompanha a mesma transformação.
 
-Cada integrante deve explicar sua contribuicao real e demonstrar que conhece a aplicacao completa. Preencham a divisao somente depois de combinar quem fez cada parte.
+## 7. Antes da apresentação
 
-## 7. Antes de apresentar
-
-- Confirmar que os dois temas foram sorteados ou autorizados pelo professor.
-- Executar a aplicacao no computador da apresentacao.
-- Testar os controles, a pausa, a textura, a iluminacao e a sombra.
-- Saber explicar a diferenca entre sombrear uma superficie e projetar uma sombra.
-- Informar os nomes dos integrantes e suas contribuicoes reais.
+- Confirmar os temas sorteados e os nomes dos integrantes.
+- Executar o projeto no computador da apresentação.
+- Testar entrada, fechamento da porta e partida.
+- Demonstrar câmera, pausa, textura, iluminação e sombra.
+- Cada integrante deve saber explicar o código e sua contribuição real.

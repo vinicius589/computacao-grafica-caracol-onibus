@@ -1,18 +1,24 @@
 # Resultado dos testes automatizados
 
-Data da revisao: 04/11/2026.
+## Testes previstos nesta revisão
 
-## Testes executados no ambiente de desenvolvimento
+A suíte foi executada localmente: **16 testes passaram** — 13 da animação e 3 do instalador. Os testes de animação verificam:
+- O ônibus chega primeiro e espera o caracol.
+- Os dois chegam antes da abertura da porta.
+- A porta abre antes do embarque.
+- O caracol atravessa a porta durante a etapa de embarque.
+- O caracol fica marcado como embarcado ao terminar a entrada.
+- A porta só fecha depois que o caracol entra.
+- O ônibus só parte depois de fechar a porta.
+- O passageiro permanece embarcado durante a partida.
+- O ciclo reinicia com o caracol fora do ônibus.
+- Delta time zero não altera o estado.
+- Passos de tempo diferentes chegam ao mesmo ponto.
+- Um quadro longo aproveita o tempo restante sem pular o embarque.
+- As rodas giram somente enquanto o ônibus se desloca.
 
-- Sintaxe Python: compilacao de `main.py`, `animacao.py`, `instalar_framework.py` e dos testes concluida sem erro.
-- Testes automatizados: **12 aprovados**.
-- Testes da sequencia: chegada conjunta, abertura, sinalizacao, fechamento, partida, reinicio, delta time e rodas paradas durante a espera.
-- Testes do instalador: framework ja valido, extracao seletiva de ZIP e rejeicao de ZIP sem a pasta esperada.
+## Limite da validação
 
-## Limitacao desta validacao
+Os 16 testes automatizados cobrem a lógica da sequência e a extração do framework em arquivos ZIP simulados. A janela gráfica ainda deve ser executada no Windows para conferir visualmente a entrada pela porta, a visibilidade do passageiro, a textura, a câmera, a iluminação e as sombras. A revisão desta branch não substitui esse teste visual.
 
-A janela 3D ainda precisa ser executada em um Windows com Python 3.11 e driver OpenGL. O ambiente usado nesta revisao tem Python 3.13 e nao possui Pygame nem PyOpenGL instalados, portanto nao foi possivel comprovar a renderizacao visual nesta etapa.
-
-## Como repetir
-
-No Windows, execute `INICIAR.bat`. Depois, execute `TESTAR.bat` para repetir os 12 testes.
+Execute INICIAR.bat para abrir a cena e TESTAR.bat para repetir os testes.

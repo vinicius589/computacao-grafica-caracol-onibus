@@ -1,10 +1,10 @@
-"""Testes da sequencia de animacao sem precisar abrir uma janela 3D."""
+"""Testa a sequencia de chegada, embarque e partida."""
 
 from animacao import SequenciaAnimacao
 
 
 def avancar_ate(animacao, etapa, limite=2000, passo=0.05):
-    """Avanca o tempo ate a etapa informada, ou falha se nao chegar."""
+    """Avanca a animacao ate a etapa informada."""
     for _ in range(limite):
         if animacao.etapa == etapa:
             return
@@ -12,73 +12,153 @@ def avancar_ate(animacao, etapa, limite=2000, passo=0.05):
     raise AssertionError(f"A animacao nao chegou a etapa: {etapa}")
 
 
-def test_onibus_e_caracol_precisam_chegar_antes_da_porta_abrir():
+def test_onibus_chega_primeiro_e_espera_o_caracol():
     animacao = SequenciaAnimacao()
-    avancar_ate(animacao, "abrir")
+    animacao.atualizar(2.5)
+
+    assert animacao.etapa == "aproximacao"
+    assert animacao.z_onibus == 1.2
+    assert animacao.x_caracol > 0.25
+    assert animacao.onibus_esta_se_movendo() is False
+
+
+def test_onibus_e_caracol_terminam_a_aproximacao():
+    animacao = SequenciaAnimacao()
+    avancar_ate(animacao, "abrir_porta")
+
     assert animacao.x_caracol == 0.25
     assert animacao.z_onibus == 1.2
     assert animacao.porta == 0.0
+    assert animacao.embarcado is False
 
 
-def test_porta_abre_antes_da_sinalizacao():
+def test_porta_abre_antes_de_o_caracol_entrar():
     animacao = SequenciaAnimacao()
-    avancar_ate(animacao, "sinalizar")
+    avancar_ate(animacao, "embarque")
+
     assert animacao.porta == 1.0
-    assert animacao.etapa == "sinalizar"
+    assert animacao.embarcado is False
+    assert animacao.x_caracol == 0.25
+
+
+def test_caracol_avanca_pela_porta_durante_o_embarque():
+    animacao = SequenciaAnimacao()
+    avancar_ate(animacao, "embarque")
+    animacao.atualizar(1.1)
+
+    assert animacao.etapa == "embarque"
+    assert -2.3 < animacao.x_caracol < 0.25
+    assert animacao.y_caracol > animacao.CARACOL_Y_CHAO
+    assert animacao.porta == 1.0
+    assert animacao.embarcado is False
+
+
+def test_caracol_fica_dentro_ao_terminar_o_embarque():
+    animacao = SequenciaAnimacao()
+    avancar_ate(animacao, "embarque")
+    animacao.atualizar(2.2)
+
+    assert animacao.etapa == "espera_embarcado"
+    assert animacao.embarcado is True
+    assert animacao.x_caracol == -2.3
+    assert animacao.y_caracol == 0.92
+    assert animacao.angulo_caracol == animacao.CARACOL_ANGULO_DENTRO
+    assert animacao.porta == 1.0
+
+
+def test_porta_so_fecha_depois_que_o_caracol_embarca():
+    animacao = SequenciaAnimacao()
+    avancar_ate(animacao, "fechar_porta")
+
+    assert animacao.embarcado is True
+    assert animacao.porta == 1.0
+
+    animacao.atualizar(0.4)
+    assert animacao.etapa == "fechar_porta"
+    assert animacao.porta == 0.5
 
 
 def test_onibus_so_parte_depois_de_fechar_a_porta():
     animacao = SequenciaAnimacao()
-    avancar_ate(animacao, "partir")
+    avancar_ate(animacao, "partida")
+
+    assert animacao.embarcado is True
     assert animacao.porta == 0.0
     assert animacao.z_onibus == 1.2
-    animacao.atualizar(0.5)
-    assert animacao.z_onibus < 1.2
+    assert animacao.onibus_esta_se_movendo() is True
 
 
-def test_animacao_reinicia_apos_o_onibus_sair():
+def test_caracol_permanece_embarcado_durante_a_partida():
     animacao = SequenciaAnimacao()
-    avancar_ate(animacao, "espera")
-    animacao.atualizar(1.1)
+    avancar_ate(animacao, "partida")
+    animacao.atualizar(1.0)
+
+    assert animacao.embarcado is True
+    assert animacao.z_onibus < 1.2
+    assert animacao.etapa == "partida"
+
+
+def test_animacao_reinicia_e_o_caracol_desembarca_para_o_proximo_ciclo():
+    animacao = SequenciaAnimacao()
+    avancar_ate(animacao, "reiniciar")
+    animacao.atualizar(1.0)
+
     assert animacao.etapa == "aproximacao"
+    assert animacao.embarcado is False
     assert animacao.x_caracol == 3.6
     assert animacao.z_onibus == 6.0
+    assert animacao.porta == 0.0
 
 
 def test_delta_tempo_zero_nao_muda_a_cena():
     animacao = SequenciaAnimacao()
-    posicao_inicial = (animacao.x_caracol, animacao.z_onibus, animacao.etapa)
+    estado = (
+        animacao.etapa,
+        animacao.x_caracol,
+        animacao.y_caracol,
+        animacao.z_onibus,
+        animacao.porta
+    )
+
     animacao.atualizar(0)
-    assert (animacao.x_caracol, animacao.z_onibus, animacao.etapa) == posicao_inicial
+
+    assert estado == (
+        animacao.etapa,
+        animacao.x_caracol,
+        animacao.y_caracol,
+        animacao.z_onibus,
+        animacao.porta
+    )
 
 
-def test_onibus_espera_enquanto_o_caracol_termina_de_chegar():
+def test_passos_de_tempo_diferentes_chegam_ao_mesmo_ponto():
+    rapido = SequenciaAnimacao()
+    lento = SequenciaAnimacao()
+
+    avancar_ate(rapido, "abrir_porta", passo=0.01)
+    avancar_ate(lento, "abrir_porta", passo=0.10)
+
+    assert rapido.x_caracol == lento.x_caracol == 0.25
+    assert rapido.z_onibus == lento.z_onibus == 1.2
+
+
+def test_um_quadro_longo_nao_pula_o_embarque():
     animacao = SequenciaAnimacao()
-    animacao.atualizar(2.5)
-    assert animacao.etapa == "aproximacao"
-    assert animacao.z_onibus == 1.2
-    assert animacao.x_caracol > 0.25
+    animacao.atualizar(8.0)
+
+    assert animacao.etapa == "partida"
+    assert animacao.embarcado is True
+    assert animacao.porta == 0.0
+    assert animacao.z_onibus < 1.2
 
 
-def test_chegada_final_nao_depende_do_tamanho_do_passo():
-    animacao_rapida = SequenciaAnimacao()
-    animacao_lenta = SequenciaAnimacao()
-    avancar_ate(animacao_rapida, "abrir", passo=0.01)
-    avancar_ate(animacao_lenta, "abrir", passo=0.10)
-    assert animacao_rapida.x_caracol == animacao_lenta.x_caracol == 0.25
-    assert animacao_rapida.z_onibus == animacao_lenta.z_onibus == 1.2
-
-
-def test_rodas_param_quando_o_onibus_espera_o_caracol():
+def test_rodas_giram_so_quando_o_onibus_anda():
     animacao = SequenciaAnimacao()
+
+    assert animacao.onibus_esta_se_movendo() is True
+
     animacao.atualizar(2.5)
-    assert animacao.etapa == "aproximacao"
-    assert animacao.z_onibus == 1.2
     assert animacao.onibus_esta_se_movendo() is False
 
-
-def test_rodas_giram_durante_a_chegada_e_a_partida():
-    animacao = SequenciaAnimacao()
-    assert animacao.onibus_esta_se_movendo() is True
-    avancar_ate(animacao, "partir")
+    avancar_ate(animacao, "partida")
     assert animacao.onibus_esta_se_movendo() is True
