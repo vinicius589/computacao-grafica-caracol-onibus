@@ -18,7 +18,7 @@ Essa divisão registra as responsabilidades principais combinadas para a entrega
 
 ## Uso de inteligência artificial
 
-A ferramenta de IA generativa **ChatGPT** foi utilizada como apoio ao processo de desenvolvimento e documentação. O suporte incluiu planejamento de soluções, elaboração e revisão de trechos de código, análise de problemas de execução e compatibilidade entre versões de Python e bibliotecas, apoio à estruturação de testes automatizados e organização das explicações técnicas. A assistência incidiu especialmente sobre partes de `main.py` e `animacao.py`, componentes relacionados do framework `py3d/` e os materiais de documentação. As sugestões foram avaliadas e adaptadas ao projeto. A ferramenta não substitui a compreensão dos conceitos nem a responsabilidade dos integrantes pela integração, revisão, apresentação e resultado final.
+A ferramenta de IA generativa **ChatGPT (OpenAI)** foi utilizada como apoio ao desenvolvimento e à documentação. O suporte incluiu esclarecimento de conceitos, análise de compatibilidade do ambiente Python e sugestões pontuais de ajustes em `main.py`, `animacao.py` e `py3d/core_ext/mesh.py`. Também houve apoio à revisão da lógica de animação, à estruturação dos testes em `tests/test_animacao.py` e à organização da documentação. As sugestões foram avaliadas e adaptadas ao projeto; a ferramenta não substituiu a compreensão do código, a integração, a verificação do funcionamento nem a apresentação, pelas quais os integrantes permanecem responsáveis.
 
 ## Cena
 
