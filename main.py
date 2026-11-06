@@ -28,8 +28,8 @@ from animacao import SequenciaAnimacao
 PASTA_PROJETO = Path(__file__).resolve().parent
 PASTA_ASSETS = PASTA_PROJETO / "assets"
 
-# O caracol fica pequeno o bastante para caber na cabine.
-ESCALA_CARACOL = 0.59
+# O caracol fica visivel dentro da cabine, sem ultrapassar a carroceria.
+ESCALA_CARACOL = 0.62
 
 # Posicoes fixas do onibus na cena.
 ONIBUS_X = SequenciaAnimacao.ONIBUS_X
@@ -65,9 +65,10 @@ class TrabalhoComputacaoGrafica(Base):
         self.renderer = Renderer(clear_color=(0.34, 0.52, 0.68))
         self.scene = Scene()
 
-        self.camera = Camera(angle_of_view=55, aspect_ratio=1100 / 720, near=0.1, far=100)
-        self.camera.set_position([8, 6, 11])
-        self.camera.look_at([0, 0.8, 0])
+        # A camera fica voltada para a lateral aberta do onibus e para o caracol.
+        self.camera = Camera(angle_of_view=58, aspect_ratio=1100 / 720, near=0.1, far=100)
+        self.camera.set_position([7.2, 5.6, 8.8])
+        self.camera.look_at([-0.5, 1.0, 0.3])
 
         # O teclado movimenta a camera.
         self.camera_rig = MovementRig(units_per_second=4, degrees_per_second=65)
@@ -114,62 +115,92 @@ class TrabalhoComputacaoGrafica(Base):
         self.tempo_cena = 0.0
         self.angulo_antena = 0.0
         self.angulo_caracol = math.pi
+        self.angulo_porta = 0.0
 
     def criar_ambiente(self):
-        """Cria o chao, a calcada, a faixa e o ponto de onibus."""
+        """Cria a rua e um ponto de onibus organizado fora do caminho do caracol."""
+        # Asfalto de toda a cena.
         chao = self.adicionar_peca(
             self.scene, RectangleGeometry(width=24, height=22),
             self.material_asfalto, [0, 0, 0]
         )
         chao.rotate_x(-math.pi / 2)
 
+        # Calcada e meio-fio ficam atras do percurso do caracol.
         self.adicionar_peca(
-            self.scene, BoxGeometry(3.0, 0.18, 8.0), self.material_cinza,
-            [2.8, 0.02, 0.8]
+            self.scene, BoxGeometry(8.0, 0.14, 2.6), self.material_cinza,
+            [2.8, 0.07, 4.0]
+        )
+        self.adicionar_peca(
+            self.scene, BoxGeometry(8.0, 0.16, 0.18), self.material_branco,
+            [2.8, 0.08, 2.68]
         )
 
-        # Faixas brancas no chao.
+        # Faixas da rua.
         for indice in range(6):
             self.adicionar_peca(
                 self.scene, BoxGeometry(0.48, 0.025, 2.8), self.material_branco,
                 [0.6 + indice * 0.58, 0.025, -2.5]
             )
 
-        # Poste e placa do ponto.
+        # Cobertura simples do ponto de onibus.
+        for pos_x in [1.25, 4.35]:
+            self.adicionar_peca(
+                self.scene, CylinderGeometry(radius=0.055, height=2.35),
+                self.material_metal, [pos_x, 1.25, 4.0]
+            )
+
         self.adicionar_peca(
-            self.scene, CylinderGeometry(radius=0.055, height=2.1),
-            self.material_metal, [1.25, 1.15, 2.6]
-        )
-        self.adicionar_peca(
-            self.scene, BoxGeometry(0.85, 0.85, 0.12), self.material_azul,
-            [1.25, 2.25, 2.6]
-        )
-        self.adicionar_peca(
-            self.scene, BoxGeometry(0.28, 0.42, 0.04), self.material_branco,
-            [1.25, 2.25, 2.51]
+            self.scene, BoxGeometry(3.55, 0.14, 2.15), self.material_azul,
+            [2.8, 2.48, 4.0]
         )
 
-        # Banco do ponto.
+        # Banco: fica na calcada, longe do caminho de embarque.
         self.adicionar_peca(
             self.scene, BoxGeometry(1.6, 0.12, 0.42), self.material_amarelo,
-            [1.65, 0.62, 0.95]
+            [2.75, 0.62, 4.15]
         )
         self.adicionar_peca(
             self.scene, BoxGeometry(1.6, 0.72, 0.12), self.material_metal,
-            [1.65, 1.0, 1.12]
+            [2.75, 1.0, 4.34]
         )
-        for pos_x in [1.05, 2.25]:
+        for pos_x in [2.15, 3.35]:
             self.adicionar_peca(
                 self.scene, BoxGeometry(0.10, 0.42, 0.10), self.material_metal,
-                [pos_x, 0.34, 0.95]
+                [pos_x, 0.34, 4.15]
+            )
+
+        # Placa do ponto, afastada do caracol e da entrada do onibus.
+        self.adicionar_peca(
+            self.scene, CylinderGeometry(radius=0.055, height=2.0),
+            self.material_metal, [5.15, 1.08, 4.0]
+        )
+        self.adicionar_peca(
+            self.scene, BoxGeometry(0.82, 0.72, 0.12), self.material_azul,
+            [5.15, 2.12, 4.0]
+        )
+        self.adicionar_peca(
+            self.scene, BoxGeometry(0.26, 0.35, 0.04), self.material_branco,
+            [5.15, 2.12, 3.93]
+        )
+
+        # Duas arvores pequenas deixam o ponto mais acolhedor sem esconder a cena.
+        for pos_x in [0.0, 6.0]:
+            self.adicionar_peca(
+                self.scene, CylinderGeometry(radius=0.12, height=1.35),
+                self.material_casco, [pos_x, 0.82, 4.85]
+            )
+            self.adicionar_peca(
+                self.scene, SphereGeometry(radius=0.72), self.material_verde,
+                [pos_x, 1.95, 4.85]
             )
 
     def criar_onibus(self):
-        """Monta um onibus com uma abertura lateral para o embarque."""
+        """Monta um onibus amarelo com janelas e duas portas articuladas."""
         self.onibus = Group()
         self.scene.add(self.onibus)
 
-        # Parte de baixo do onibus, que tambem serve como piso.
+        # Chassi inferior e piso interno.
         self.adicionar_peca(
             self.onibus, BoxGeometry(2.0, 0.58, 3.8), self.material_amarelo,
             [0, 0.62, 0]
@@ -179,63 +210,130 @@ class TrabalhoComputacaoGrafica(Base):
             [0, 0.95, 0]
         )
 
-        # Rampa na porta: o caracol sobe por ela para chegar ao piso.
+        # Rampa inclinada que liga o chao ao piso do onibus.
         rampa = self.adicionar_peca(
             self.onibus, BoxGeometry(1.30, 0.12, 1.15), self.material_metal,
             [0.60, 0.48, -0.05]
         )
         rampa.rotate_z(-0.75)
 
-        # Teto em barras: deixa a cabine visivel por cima.
+        # Laterais inferiores: a entrada central permanece livre.
         for lado in [-1, 1]:
-            self.adicionar_peca(
-                self.onibus, BoxGeometry(0.16, 0.12, 3.25), self.material_amarelo,
-                [lado * 0.86, 2.03, 0]
-            )
-
-        # Travessas dianteira e traseira do teto.
-        for pos_z in [-1.58, 1.58]:
-            self.adicionar_peca(
-                self.onibus, BoxGeometry(1.84, 0.12, 0.16), self.material_amarelo,
-                [0, 2.03, pos_z]
-            )
-
-        # Para-brisa e vidro traseiro.
-        self.adicionar_peca(
-            self.onibus, BoxGeometry(1.35, 0.62, 0.045), self.material_vidro,
-            [0, 1.52, -1.88]
-        )
-        self.adicionar_peca(
-            self.onibus, BoxGeometry(1.35, 0.62, 0.045), self.material_vidro,
-            [0, 1.52, 1.88]
-        )
+            for pos_z in [-1.30, 1.30]:
+                self.adicionar_peca(
+                    self.onibus, BoxGeometry(0.08, 0.52, 0.82),
+                    self.material_amarelo, [lado * 0.99, 0.68, pos_z]
+                )
 
         # Janelas do lado oposto ao embarque.
-        for pos_z in [-1.05, 0.0, 1.05]:
+        for pos_z in [-1.20, 0.0, 1.20]:
             self.adicionar_peca(
-                self.onibus, BoxGeometry(0.045, 0.62, 0.82), self.material_vidro,
-                [-0.98, 1.50, pos_z]
+                self.onibus, BoxGeometry(0.055, 0.78, 0.88),
+                self.material_vidro, [-1.0, 1.76, pos_z]
             )
 
-        # Colunas da lateral aberta. Os espacos entre elas deixam ver o caracol.
-        for pos_z in [-1.60, -0.65, 0.65, 1.60]:
+        # Janelas do lado de embarque, uma de cada lado das portas.
+        for pos_z in [-1.32, 1.32]:
             self.adicionar_peca(
-                self.onibus, BoxGeometry(0.10, 1.06, 0.12), self.material_amarelo,
-                [0.98, 1.44, pos_z]
+                self.onibus, BoxGeometry(0.055, 0.78, 0.76),
+                self.material_vidro, [1.0, 1.76, pos_z]
             )
 
-        # Porta: quando desliza para tras, libera a abertura central.
-        self.porta_onibus = self.adicionar_peca(
-            self.onibus, BoxGeometry(0.055, 1.06, 0.78), self.material_azul,
-            [1.08, 1.44, -0.05]
+        # Colunas da carroceria e batentes que delimitam as portas.
+        for pos_z in [-1.78, -0.90, 0.90, 1.78]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(0.12, 1.58, 0.13),
+                self.material_amarelo, [0.99, 1.75, pos_z]
+            )
+
+        # A lateral oposta tambem recebe colunas e contornos amarelos.
+        for pos_z in [-1.78, -0.60, 0.60, 1.78]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(0.12, 1.58, 0.13),
+                self.material_amarelo, [-0.99, 1.75, pos_z]
+            )
+
+        # Duas partes da porta se abrem para fora, cada uma em seu proprio eixo.
+        # Como os grupos sao filhos do onibus, acompanham a carroceria sem
+        # recalcular posicoes globais a cada quadro.
+        self.porta_esquerda = Group()
+        self.porta_esquerda.set_position([1.04, 1.72, -0.90])
+        self.onibus.add(self.porta_esquerda)
+
+        self.adicionar_peca(
+            self.porta_esquerda, BoxGeometry(0.06, 1.48, 0.90),
+            self.material_azul, [0, 0, 0.45]
+        )
+        self.adicionar_peca(
+            self.porta_esquerda, BoxGeometry(0.035, 0.20, 0.035),
+            self.material_metal, [0.045, 0, 0.80]
         )
 
-        # Rodas e cubos das rodas.
+        self.porta_direita = Group()
+        self.porta_direita.set_position([1.04, 1.72, 0.90])
+        self.onibus.add(self.porta_direita)
+
+        self.adicionar_peca(
+            self.porta_direita, BoxGeometry(0.06, 1.48, 0.90),
+            self.material_azul, [0, 0, -0.45]
+        )
+        self.adicionar_peca(
+            self.porta_direita, BoxGeometry(0.035, 0.20, 0.035),
+            self.material_metal, [0.045, 0, -0.80]
+        )
+
+        # Teto com duas partes: reforca o formato do onibus, mas deixa
+        # uma abertura central para a camera mostrar o caracol.
+        for lado in [-1, 1]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(0.16, 0.18, 3.55),
+                self.material_amarelo, [lado * 0.86, 2.62, 0]
+            )
+
+        for pos_z in [-1.70, 1.70]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(1.84, 0.18, 0.16),
+                self.material_amarelo, [0, 2.62, pos_z]
+            )
+
+        for pos_z in [-1.30, 1.30]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(1.72, 0.14, 0.92),
+                self.material_amarelo, [0, 2.62, pos_z]
+            )
+
+        # Para-brisa dianteiro e vidro traseiro.
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(1.58, 0.84, 0.055), self.material_vidro,
+            [0, 1.78, -1.92]
+        )
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(1.58, 0.84, 0.055), self.material_vidro,
+            [0, 1.78, 1.92]
+        )
+
+        # Faixa de identificacao acima do para-brisa.
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(1.10, 0.22, 0.10), self.material_cinza,
+            [0, 2.25, -1.93]
+        )
+
+        # Para-choques dianteiro e traseiro.
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(2.05, 0.18, 0.14), self.material_metal,
+            [0, 0.42, -1.98]
+        )
+        self.adicionar_peca(
+            self.onibus, BoxGeometry(2.05, 0.18, 0.14), self.material_metal,
+            [0, 0.42, 1.98]
+        )
+
+        # Rodas e cubos.
         self.rodas = []
         for lado in [-1, 1]:
             for pos_z in [-1.25, 1.25]:
                 roda = self.adicionar_peca(
-                    self.onibus, CylinderGeometry(radius=0.36, height=0.18),
+                    self.onibus, CylinderGeometry(radius=0.38, height=0.18),
                     self.material_pneu, [lado * 1.02, 0.38, pos_z]
                 )
                 roda.rotate_z(math.pi / 2)
@@ -248,15 +346,22 @@ class TrabalhoComputacaoGrafica(Base):
                 cubo.rotate_z(math.pi / 2)
                 self.rodas.append(cubo)
 
-        # Farois dianteiros e lanternas traseiras.
+        # Faróis e lanternas.
         for lado in [-1, 1]:
             self.adicionar_peca(
                 self.onibus, SphereGeometry(radius=0.13), self.material_luz,
-                [lado * 0.68, 0.68, -1.94]
+                [lado * 0.68, 0.68, -2.02]
             )
             self.adicionar_peca(
                 self.onibus, BoxGeometry(0.22, 0.22, 0.08), self.material_cinza,
-                [lado * 0.68, 0.68, 1.94]
+                [lado * 0.68, 0.68, 2.02]
+            )
+
+        # Espelhos laterais ajudam a identificar a frente do veiculo.
+        for lado in [-1, 1]:
+            self.adicionar_peca(
+                self.onibus, BoxGeometry(0.12, 0.10, 0.20), self.material_metal,
+                [lado * 1.12, 1.88, -1.55]
             )
 
     def criar_antena(self, grupo, posicao):
@@ -336,10 +441,12 @@ class TrabalhoComputacaoGrafica(Base):
                 POSICAO_CARACOL_Z - self.animacao.z_onibus
             ])
 
-        # A porta desliza para tras quando abre.
-        self.porta_onibus.set_position([
-            1.08, 1.44, -0.05 + self.animacao.porta * 1.15
-        ])
+        # Abre as duas folhas para fora, mantendo os eixos presos ao onibus.
+        novo_angulo_porta = self.animacao.porta * (math.pi / 2)
+        diferenca_porta = novo_angulo_porta - self.angulo_porta
+        self.porta_esquerda.rotate_y(diferenca_porta)
+        self.porta_direita.rotate_y(-diferenca_porta)
+        self.angulo_porta = novo_angulo_porta
 
         # As rodas giram somente enquanto o onibus esta andando.
         if not self.pausado and self.animacao.onibus_esta_se_movendo():
