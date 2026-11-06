@@ -15,9 +15,9 @@ PASTA_PROJETO = Path(__file__).resolve().parent
 def preparar_bibliotecas():
     """Instala somente Pygame, PyOpenGL e NumPy quando estiverem faltando."""
     bibliotecas = {
-        "pygame": "pygame",
-        "OpenGL": "PyOpenGL",
-        "numpy": "numpy"
+        "pygame": "pygame==2.5.2",
+        "OpenGL": "PyOpenGL==3.1.7",
+        "numpy": "numpy==1.26.4"
     }
 
     faltando = []
