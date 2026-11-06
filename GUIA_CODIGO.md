@@ -4,9 +4,9 @@ Este guia explica o projeto em linguagem simples. Para apresentar, comece pelo f
 
 ## 1. Como executar
 
-Abra a pasta completa no PyCharm, configure o Python 3.11, abra `main.py` e clique em **Run**.
+Abra a pasta completa no PyCharm, selecione um interpretador Python já instalado (de 3.6 a 3.15), abra `main.py` e clique em **Run**.
 
-Antes de abrir a janela, o próprio arquivo verifica se Pygame, PyOpenGL e NumPy estão instalados. Caso falte alguma dessas bibliotecas, ele chama o pip usando o mesmo interpretador do PyCharm. A pasta `py3d` já está incluída no projeto.
+Antes de abrir a janela, o próprio arquivo identifica a versão do Python e verifica se Pygame, PyOpenGL e NumPy podem ser importados. Caso falte alguma biblioteca, ele instala versões compatíveis usando o mesmo interpretador do PyCharm. Em Python 3.14 e 3.15, utiliza Pygame Community Edition, cujo módulo continua sendo importado como `pygame`. A pasta `py3d` já está incluída no projeto.
 
 ## 2. Como o código está dividido
 
@@ -18,6 +18,7 @@ Antes de abrir a janela, o próprio arquivo verifica se Pygame, PyOpenGL e NumPy
 
 ## 3. Funções principais de main.py
 
+- `obter_pacotes_compativeis()`: escolhe as versões das bibliotecas de acordo com a versão do Python.
 - `preparar_bibliotecas()`: verifica e instala as três bibliotecas permitidas, se alguma estiver faltando.
 - `criar_material(cor, textura)`: prepara a cor e a iluminação de uma peça.
 - `adicionar_peca(grupo, geometria, material, posicao)`: cria uma peça e coloca no grupo.
