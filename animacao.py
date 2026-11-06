@@ -148,8 +148,9 @@ class SequenciaAnimacao:
 
         tempo_restante = delta_tempo
 
-        # Se um quadro demorar mais, o tempo que sobrar continua na proxima etapa.
-        while tempo_restante > 0:
+        # Pequenas sobras numericas sao descartadas para nao iniciar a
+        # proxima etapa com um tempo quase zero.
+        while tempo_restante > 0.000000001:
             duracao = self.DURACOES[self.etapa]
             falta = duracao - self.tempo_etapa
 
@@ -161,6 +162,9 @@ class SequenciaAnimacao:
 
             if self.tempo_etapa >= duracao - 0.000000001:
                 self.avancar_etapa()
+
+            if tempo_restante < 0.000000001:
+                tempo_restante = 0.0
 
     def onibus_esta_se_movendo(self):
         """Informa quando as rodas devem girar."""
