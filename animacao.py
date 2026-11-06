@@ -6,6 +6,7 @@ class SequenciaAnimacao:
 
     # Posicoes do onibus.
     ONIBUS_X = -2.3
+    CARACOL_X_INTERIOR = ONIBUS_X + 0.18
     ONIBUS_Z_INICIAL = 6.0
     ONIBUS_Z_PARADA = 1.2
     ONIBUS_Z_FINAL = -6.0
@@ -115,7 +116,7 @@ class SequenciaAnimacao:
                 )
                 self.x_caracol = self.interpolar(
                     self.CARACOL_X_RAMPA,
-                    self.ONIBUS_X,
+                    self.CARACOL_X_INTERIOR,
                     progresso_rampa
                 )
                 self.y_caracol = self.interpolar(
