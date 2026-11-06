@@ -1,10 +1,75 @@
 """Cena 3D: o caracol entra no onibus e viaja com ele."""
 
-import math
+# Bibliotecas usadas para criar a cena.
+# Se alguma estiver faltando, o proprio main.py instala antes de iniciar.
+
+import importlib.util
+import subprocess
+import sys
 from pathlib import Path
+
+
+PASTA_PROJETO = Path(__file__).resolve().parent
+
+
+def preparar_bibliotecas():
+    """Instala somente Pygame, PyOpenGL e NumPy quando estiverem faltando."""
+    bibliotecas = {
+        "pygame": "pygame",
+        "OpenGL": "PyOpenGL",
+        "numpy": "numpy"
+    }
+
+    faltando = []
+
+    for modulo, pacote in bibliotecas.items():
+        if importlib.util.find_spec(modulo) is None:
+            faltando.append(pacote)
+
+    if not faltando:
+        return
+
+    print("Instalando as bibliotecas necessarias para o projeto...")
+
+    try:
+        # O pip faz parte do Python. Se nao estiver disponivel, ativa pelo ensurepip.
+        if importlib.util.find_spec("pip") is None:
+            subprocess.run(
+                [sys.executable, "-m", "ensurepip", "--upgrade"],
+                check=True
+            )
+
+        # Instala somente as tres bibliotecas usadas na disciplina.
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", *faltando],
+            check=True
+        )
+
+    except (subprocess.CalledProcessError, OSError) as erro:
+        raise SystemExit(
+            "Nao foi possivel instalar as bibliotecas. "
+            "Confira a internet e o interpretador Python do PyCharm. "
+            f"Detalhes: {erro}"
+        )
+
+    print("Bibliotecas instaladas com sucesso.")
+
+
+# Esta verificacao roda antes dos imports do Pygame, OpenGL e NumPy.
+preparar_bibliotecas()
+
+# O framework Py3D ja acompanha a pasta do projeto.
+if not (PASTA_PROJETO / "py3d" / "__init__.py").is_file():
+    raise SystemExit(
+        "A pasta py3d nao foi encontrada. Abra a pasta completa do projeto no PyCharm."
+    )
+
+
+import math
 
 import pygame
 
+from py3d.core.matrix import Matrix
 from py3d.core.base import Base
 from py3d.core_ext.renderer import Renderer
 from py3d.core_ext.scene import Scene
@@ -25,7 +90,6 @@ from py3d.extras.movement_rig import MovementRig
 from animacao import SequenciaAnimacao
 
 
-PASTA_PROJETO = Path(__file__).resolve().parent
 PASTA_ASSETS = PASTA_PROJETO / "assets"
 
 # O caracol fica visivel dentro da cabine, sem ultrapassar a carroceria.
@@ -115,7 +179,6 @@ class TrabalhoComputacaoGrafica(Base):
         self.tempo_cena = 0.0
         self.angulo_antena = 0.0
         self.angulo_caracol = math.pi
-        self.angulo_porta = 0.0
 
     def criar_ambiente(self):
         """Cria a rua e um ponto de onibus organizado fora do caminho do caracol."""
@@ -129,11 +192,11 @@ class TrabalhoComputacaoGrafica(Base):
         # Calcada e meio-fio ficam atras do percurso do caracol.
         self.adicionar_peca(
             self.scene, BoxGeometry(8.0, 0.14, 2.6), self.material_cinza,
-            [2.8, 0.07, 4.0]
+            [2.8, 0.07, -4.0]
         )
         self.adicionar_peca(
             self.scene, BoxGeometry(8.0, 0.16, 0.18), self.material_branco,
-            [2.8, 0.08, 2.68]
+            [2.8, 0.08, -5.32]
         )
 
         # Faixas da rua.
@@ -147,52 +210,52 @@ class TrabalhoComputacaoGrafica(Base):
         for pos_x in [1.25, 4.35]:
             self.adicionar_peca(
                 self.scene, CylinderGeometry(radius=0.055, height=2.35),
-                self.material_metal, [pos_x, 1.25, 4.0]
+                self.material_metal, [pos_x, 1.25, -4.0]
             )
 
         self.adicionar_peca(
             self.scene, BoxGeometry(3.55, 0.14, 2.15), self.material_azul,
-            [2.8, 2.48, 4.0]
+            [2.8, 2.48, -4.0]
         )
 
         # Banco: fica na calcada, longe do caminho de embarque.
         self.adicionar_peca(
             self.scene, BoxGeometry(1.6, 0.12, 0.42), self.material_amarelo,
-            [2.75, 0.62, 4.15]
+            [2.75, 0.62, -4.15]
         )
         self.adicionar_peca(
             self.scene, BoxGeometry(1.6, 0.72, 0.12), self.material_metal,
-            [2.75, 1.0, 4.34]
+            [2.75, 1.0, -4.34]
         )
         for pos_x in [2.15, 3.35]:
             self.adicionar_peca(
                 self.scene, BoxGeometry(0.10, 0.42, 0.10), self.material_metal,
-                [pos_x, 0.34, 4.15]
+                [pos_x, 0.34, -4.15]
             )
 
         # Placa do ponto, afastada do caracol e da entrada do onibus.
         self.adicionar_peca(
             self.scene, CylinderGeometry(radius=0.055, height=2.0),
-            self.material_metal, [5.15, 1.08, 4.0]
+            self.material_metal, [5.15, 1.08, -4.0]
         )
         self.adicionar_peca(
             self.scene, BoxGeometry(0.82, 0.72, 0.12), self.material_azul,
-            [5.15, 2.12, 4.0]
+            [5.15, 2.12, -4.0]
         )
         self.adicionar_peca(
             self.scene, BoxGeometry(0.26, 0.35, 0.04), self.material_branco,
-            [5.15, 2.12, 3.93]
+            [5.15, 2.12, -4.07]
         )
 
         # Duas arvores pequenas deixam o ponto mais acolhedor sem esconder a cena.
         for pos_x in [0.0, 6.0]:
             self.adicionar_peca(
                 self.scene, CylinderGeometry(radius=0.12, height=1.35),
-                self.material_casco, [pos_x, 0.82, 4.85]
+                self.material_casco, [pos_x, 0.82, -5.1]
             )
             self.adicionar_peca(
                 self.scene, SphereGeometry(radius=0.72), self.material_verde,
-                [pos_x, 1.95, 4.85]
+                [pos_x, 1.95, -5.1]
             )
 
     def criar_onibus(self):
@@ -432,8 +495,8 @@ class TrabalhoComputacaoGrafica(Base):
 
         # Antes do embarque, calculamos a posicao do caracol em relacao ao onibus.
         if self.animacao.embarcado:
-            # Esta posicao local fixa faz o caracol viajar dentro do onibus.
-            self.caracol.set_position([0, self.animacao.y_caracol, 0])
+            # Deixa o caracol um pouco mais perto da lateral aberta para ficar visivel.
+            self.caracol.set_position([0.18, self.animacao.y_caracol, 0])
         else:
             self.caracol.set_position([
                 self.animacao.x_caracol - ONIBUS_X,
@@ -441,12 +504,18 @@ class TrabalhoComputacaoGrafica(Base):
                 POSICAO_CARACOL_Z - self.animacao.z_onibus
             ])
 
-        # Abre as duas folhas para fora, mantendo os eixos presos ao onibus.
-        novo_angulo_porta = self.animacao.porta * (math.pi / 2)
-        diferenca_porta = novo_angulo_porta - self.angulo_porta
-        self.porta_esquerda.rotate_y(diferenca_porta)
-        self.porta_direita.rotate_y(-diferenca_porta)
-        self.angulo_porta = novo_angulo_porta
+        # Define a rotacao a partir do valor atual da animacao.
+        # Recriar a matriz evita acumular pequenas diferencas a cada quadro.
+        angulo_porta = self.animacao.porta * (math.pi / 2)
+
+        self.porta_esquerda.local_matrix = (
+            Matrix.make_translation(1.04, 1.72, -0.90)
+            @ Matrix.make_rotation_y(angulo_porta)
+        )
+        self.porta_direita.local_matrix = (
+            Matrix.make_translation(1.04, 1.72, 0.90)
+            @ Matrix.make_rotation_y(-angulo_porta)
+        )
 
         # As rodas giram somente enquanto o onibus esta andando.
         if not self.pausado and self.animacao.onibus_esta_se_movendo():
