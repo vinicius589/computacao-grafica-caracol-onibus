@@ -9,6 +9,7 @@ A suíte verifica:
 - A abertura da porta antes do embarque.
 - A aproximação do caracol até a rampa.
 - A subida pela rampa e a entrada na cabine.
+- A chegada ao nível do piso antes de o caracol avançar para dentro da cabine.
 - A marcação do passageiro como embarcado.
 - O fechamento da porta depois da entrada.
 - A partida somente depois do fechamento.
@@ -27,4 +28,4 @@ python -m unittest discover -s tests -v
 
 ## Limite da validação
 
-Os testes verificam a lógica da sequência. A seleção automática das dependências está configurada para Python 3.6 a 3.15, mas isso não significa que a cena gráfica tenha sido executada visualmente em todas essas versões. A janela precisa ser conferida nos interpretadores que serão usados. Os testes automatizados não substituem essa validação visual.
+Os testes verificam a lógica da sequência. A seleção automática das dependências está configurada para Python 3.10 a 3.14. A cena gráfica foi executada visualmente em Python 3.14; isso não significa que tenha sido executada em todas as versões desse intervalo. Os testes automatizados verificam a lógica da animação, mas não substituem a conferência visual nos demais interpretadores.
