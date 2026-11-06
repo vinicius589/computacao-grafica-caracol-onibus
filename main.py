@@ -13,7 +13,19 @@ PASTA_PROJETO = Path(__file__).resolve().parent
 
 
 def preparar_bibliotecas():
-    """Instala somente Pygame, PyOpenGL e NumPy quando estiverem faltando."""
+    """Confere o Python e instala Pygame, PyOpenGL e NumPy se faltarem."""
+
+    # As versoes fixadas do projeto foram preparadas para Python 3.11.
+    # Isso evita que o pip tente compilar o Pygame em um Python incompativel.
+    if sys.version_info[:2] != (3, 11):
+        versao_atual = f"{sys.version_info.major}.{sys.version_info.minor}"
+        raise SystemExit(
+            "Este projeto precisa do Python 3.11. "
+            f"O interpretador selecionado esta usando Python {versao_atual}. "
+            "No PyCharm, selecione um interpretador Python 3.11 de 64 bits "
+            "e execute main.py novamente."
+        )
+
     bibliotecas = {
         "pygame": "pygame==2.5.2",
         "OpenGL": "PyOpenGL==3.1.7",
@@ -41,7 +53,7 @@ def preparar_bibliotecas():
 
         # Instala somente as tres bibliotecas usadas na disciplina.
         subprocess.run(
-            [sys.executable, "-m", "pip", "install", *faltando],
+            [sys.executable, "-m", "pip", "install", "--only-binary=:all:", *faltando],
             check=True
         )
 
