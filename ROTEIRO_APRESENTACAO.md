@@ -10,7 +10,7 @@ A cena representa um ponto de ônibus. O caracol robótico chega, espera o ônib
 2. Mostre o ônibus parando e aguardando.
 3. Mostre as duas folhas da porta abrindo para fora.
 4. Mostre o caracol caminhando até a entrada.
-5. Mostre o caracol subindo pela rampa e chegando ao piso.
+5. Mostre o caracol subindo pela rampa metálica, passando pelas faixas de apoio e chegando ao piso.
 6. Mostre as portas fechando.
 7. Mostre o ônibus partindo com o caracol dentro.
 
@@ -18,7 +18,7 @@ A câmera permite observar a cabine pela entrada lateral e pela abertura no teto
 
 ## 3. Como executar
 
-Abra a pasta completa no PyCharm, selecione uma versão do Python já instalada (de 3.6 a 3.15), abra `main.py` e clique em **Run**. Na primeira execução, o arquivo identifica a versão selecionada e instala automaticamente as versões compatíveis de Pygame, PyOpenGL e NumPy, se estiverem faltando. Não é necessário trocar para Python 3.11.
+Abra a pasta completa no PyCharm, selecione uma versão do Python já instalada (de 3.10 a 3.14), abra `main.py` e clique em **Run**. Na primeira execução, o arquivo identifica a versão selecionada e instala automaticamente as versões compatíveis de Pygame, PyOpenGL e NumPy, se estiverem faltando. Não é necessário trocar para Python 3.11.
 
 ## 4. Controles
 
