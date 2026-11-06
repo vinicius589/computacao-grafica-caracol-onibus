@@ -356,6 +356,9 @@ class TrabalhoComputacaoGrafica(Base):
             [0, 0.95, 0]
         )
 
+        # Guarda as pecas da rampa para ocultar todas depois do embarque.
+        self.pecas_rampa = []
+
         # Rampa inclinada que liga o chao ao nivel do piso interno.
         # As extremidades ficam proximas do chao e da entrada do onibus.
         rampa = self.adicionar_peca(
@@ -363,6 +366,7 @@ class TrabalhoComputacaoGrafica(Base):
             [1.55, 0.50, 0]
         )
         rampa.rotate_z(-0.73)
+        self.pecas_rampa.append(rampa)
 
         # Faixas transversais ajudam a destacar os pontos de apoio da rampa.
         # Elas ficam ligeiramente acima da superficie para permanecer visiveis.
@@ -376,6 +380,7 @@ class TrabalhoComputacaoGrafica(Base):
                 self.material_cinza, posicao
             )
             faixa.rotate_z(-0.73)
+            self.pecas_rampa.append(faixa)
 
         # Laterais inferiores: a entrada central permanece livre.
         for lado in [-1, 1]:
@@ -601,6 +606,11 @@ class TrabalhoComputacaoGrafica(Base):
 
         # Move o grupo do onibus.
         self.onibus.set_position([ONIBUS_X, 0, self.animacao.z_onibus])
+
+        # A rampa e seus apoios desaparecem quando o caracol termina de embarcar.
+        # No reinicio da sequencia, ela volta a ficar visivel para o proximo ciclo.
+        for peca_rampa in self.pecas_rampa:
+            peca_rampa.visible = not self.animacao.embarcado
 
         # Antes do embarque, calculamos a posicao do caracol em relacao ao onibus.
         if self.animacao.embarcado:
