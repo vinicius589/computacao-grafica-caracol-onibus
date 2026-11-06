@@ -2,7 +2,7 @@
 
 ## Testes previstos nesta revisão
 
-A suíte de animação foi executada localmente: **13 testes passaram**. Ela verifica:
+A suíte foi executada localmente: **16 testes passaram** — 13 da animação e 3 do instalador. Os testes de animação verificam:
 - O ônibus chega primeiro e espera o caracol.
 - Os dois chegam antes da abertura da porta.
 - A porta abre antes do embarque.
@@ -19,6 +19,6 @@ A suíte de animação foi executada localmente: **13 testes passaram**. Ela ver
 
 ## Limite da validação
 
-Os 13 testes automatizados cobrem a lógica da sequência. A janela gráfica ainda deve ser executada no Windows para conferir visualmente a entrada pela porta, a visibilidade do passageiro, a textura, a câmera, a iluminação e as sombras. A revisão desta branch não substitui esse teste visual.
+Os 16 testes automatizados cobrem a lógica da sequência e a extração do framework em arquivos ZIP simulados. A janela gráfica ainda deve ser executada no Windows para conferir visualmente a entrada pela porta, a visibilidade do passageiro, a textura, a câmera, a iluminação e as sombras. A revisão desta branch não substitui esse teste visual.
 
 Execute INICIAR.bat para abrir a cena e TESTAR.bat para repetir os testes.
