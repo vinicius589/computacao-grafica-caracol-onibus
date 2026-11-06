@@ -38,3 +38,7 @@ class Mesh(Object3D):
     @property
     def visible(self):
         return self._visible
+
+    @visible.setter
+    def visible(self, value):
+        self._visible = bool(value)
