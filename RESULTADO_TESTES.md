@@ -27,4 +27,4 @@ python -m unittest discover -s tests -v
 
 ## Limite da validação
 
-Os testes verificam a lógica da sequência. A janela gráfica precisa ser executada no Windows para conferir visualmente as portas articuladas, o encaixe do caracol, a visibilidade do personagem, o cenário, a textura, a câmera, a iluminação e as sombras. Os testes automatizados não substituem essa conferência visual.
+Os testes verificam a lógica da sequência. A seleção automática das dependências está configurada para Python 3.6 a 3.15, mas isso não significa que a cena gráfica tenha sido executada visualmente em todas essas versões. A janela precisa ser conferida nos interpretadores que serão usados. Os testes automatizados não substituem essa validação visual.

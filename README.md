@@ -15,20 +15,24 @@ O personagem fica um pouco mais próximo da lateral aberta para permanecer visí
 1. Baixe o repositório pelo botão **Code > Download ZIP** e extraia a pasta, ou clone o repositório.
 2. Abra o PyCharm e escolha **Open**.
 3. Selecione a pasta completa `computacao-grafica-caracol-onibus`.
-4. Configure um interpretador Python 3.11 para o projeto.
+4. Selecione um interpretador Python 3 já instalado no computador (de 3.6 a 3.15).
 5. Abra o arquivo `main.py`.
 6. Clique no botão **Run** (Executar).
 
-Na primeira execução, o próprio `main.py` verifica e instala automaticamente, se estiverem faltando, somente estas três bibliotecas: Pygame, PyOpenGL e NumPy. É necessário ter conexão com a internet nessa primeira execução.
+Na primeira execução, o próprio `main.py` identifica a versão do Python selecionada e instala automaticamente as versões compatíveis de Pygame, PyOpenGL e NumPy, caso estejam faltando. É necessário ter conexão com a internet nessa primeira execução. Não é necessário instalar outra versão do Python nem criar manualmente um ambiente virtual.
 
 A pasta `py3d` já acompanha o projeto. Não é necessário executar instalador separado, arquivo BAT ou baixar outro framework.
 
+Ao compactar ou enviar o projeto, não inclua as pastas `.venv`, `.venv311`, `venv` ou `.idea`. Elas são configurações locais do computador e não precisam acompanhar os arquivos-fonte. O arquivo `.gitignore` já evita que essas pastas entrem no repositório.
+
 ## Bibliotecas utilizadas
 
-- Python 3.11.
-- Pygame 2.5.2: janela, teclado e controle do tempo.
-- PyOpenGL 3.1.7: acesso à renderização OpenGL.
-- NumPy 1.26.4: operações com matrizes e vetores.
+- Python 3.6 a 3.15, em Windows de 64 bits.
+- Pygame: janela, teclado e controle do tempo. Em Python 3.14 e 3.15, o instalador usa Pygame Community Edition, que mantém o módulo `pygame` utilizado pelo código.
+- PyOpenGL: acesso à renderização OpenGL.
+- NumPy: operações com matrizes e vetores.
+
+As versões dos pacotes são escolhidas automaticamente conforme a versão do Python. Python 3.16 ainda não está incluído porque as bibliotecas necessárias não oferecem, neste momento, uma combinação estável de pacotes binários para ele. As versões 3.6 a 3.10 estão fora do suporte oficial de segurança do Python; a compatibilidade com elas é mantida apenas para atender ambientes antigos.
 
 Não há dependências de pytest ou de outras bibliotecas externas.
 
