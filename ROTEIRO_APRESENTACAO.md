@@ -8,13 +8,13 @@ A cena representa um ponto de ônibus. O caracol chega, espera o ônibus, caminh
 
 1. Mostre o caracol chegando ao ponto.
 2. Mostre o ônibus parando e aguardando.
-3. Mostre a porta deslizando para abrir.
+3. Mostre as duas folhas da porta girando para fora.
 4. Mostre o caracol caminhando até a entrada.
 5. Mostre o caracol subindo pela rampa e chegando ao piso da cabine.
-6. Mostre a porta fechando depois que ele entra.
+6. Mostre as duas folhas voltando aos batentes depois que ele entra.
 7. Mostre o ônibus saindo com o caracol dentro.
 
-A câmera permite observar a cabine pelas aberturas laterais e pelo teto em barras.
+A câmera permite observar a cabine pela entrada lateral e pela abertura central do teto. O banco e a placa ficam na calçada, afastados do caminho do caracol.
 
 ## 3. Controles
 
@@ -27,7 +27,7 @@ A câmera permite observar a cabine pelas aberturas laterais e pelo teto em barr
 
 Comece pelo final do main.py e mostre a função main(). Depois explique initialize(), criar_onibus(), criar_caracol() e update().
 
-Em seguida, abra animacao.py. Explique as etapas da sequência e mostre que a porta só fecha depois do embarque.
+Em seguida, abra animacao.py. Explique as etapas da sequência e mostre que o valor da porta vai de fechada a aberta e volta a zero antes da partida. No main.py, mostre que cada folha gira em torno de um eixo que é filho do grupo do ônibus.
 
 ## 5. Conceitos gráficos
 
