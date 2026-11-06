@@ -45,13 +45,22 @@ class SequenciaAnimacao:
         self.angulo_caracol = self.CARACOL_ANGULO_FORA
 
     def interpolar(self, inicio, fim, progresso):
-        """Calcula um valor entre inicio e fim."""
+        """Calcula um valor entre inicio e fim sem erro nos extremos."""
+        if progresso <= 0:
+            return inicio
+        if progresso >= 1:
+            return fim
         return inicio + (fim - inicio) * progresso
 
     def atualizar_posicoes(self):
         """Calcula as posicoes de acordo com a etapa atual."""
         duracao = self.DURACOES[self.etapa]
-        progresso = min(self.tempo_etapa / duracao, 1.0)
+
+        # Garante o valor exato no fim da etapa.
+        if self.tempo_etapa >= duracao - 0.000000001:
+            progresso = 1.0
+        else:
+            progresso = max(0.0, self.tempo_etapa / duracao)
 
         if self.etapa == "aproximacao":
             # O caracol caminha ate o ponto.
