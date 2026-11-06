@@ -27,31 +27,22 @@ def obter_pacotes_compativeis():
     versao = sys.version_info[:2]
     major, minor = versao
 
-    if major != 3 or minor < 6 or minor > 15:
+    if major != 3 or minor < 10 or minor > 14:
         versao_atual = "{}.{}".format(major, minor)
         raise SystemExit(
-            "Este projeto aceita Python de 3.6 a 3.15. "
-            "A versao selecionada e {}. "
-            "Python 3.16 ainda nao possui todas as bibliotecas compativeis "
-            "necessarias para esta cena.".format(versao_atual)
+            "Este projeto aceita Python de 3.10 a 3.14. "
+            "A versao selecionada e {}.".format(versao_atual)
         )
 
-    # Python antigo precisa de versoes antigas do NumPy.
-    if minor == 6:
-        numpy = "numpy==1.19.5"
-    elif minor == 7:
-        numpy = "numpy==1.21.6"
-    elif minor == 8:
-        numpy = "numpy==1.24.4"
-    elif minor <= 12:
+    # Python 3.10 a 3.12 usam NumPy 1.26.4.
+    # Python 3.13 e 3.14 usam NumPy 2.4.6.
+    if minor <= 12:
         numpy = "numpy==1.26.4"
-    elif minor <= 14:
-        numpy = "numpy==2.4.6"
     else:
-        numpy = "numpy==2.5.4"
+        numpy = "numpy==2.4.6"
 
-    # O Pygame oficial tem pacotes prontos ate Python 3.13.
-    # Para Python 3.14 e 3.15, usamos Pygame Community Edition,
+    # O Pygame oficial e usado ate Python 3.13.
+    # No Python 3.14, usamos Pygame Community Edition,
     # que continua sendo importado no codigo como pygame.
     if minor <= 12:
         pygame = "pygame==2.5.2"
@@ -104,16 +95,6 @@ def preparar_bibliotecas():
         except ImportError:
             subprocess.run(
                 [sys.executable, "-m", "ensurepip", "--upgrade"],
-                check=True
-            )
-
-        # Python 3.6 precisa da ultima linha do pip que ainda o suporta.
-        if sys.version_info[:2] == (3, 6):
-            subprocess.run(
-                [
-                    sys.executable, "-m", "pip", "install",
-                    "pip==21.3.1"
-                ],
                 check=True
             )
 
@@ -181,7 +162,7 @@ from animacao import SequenciaAnimacao
 PASTA_ASSETS = PASTA_PROJETO / "assets"
 
 # O caracol fica visivel dentro da cabine, sem ultrapassar a carroceria.
-ESCALA_CARACOL = 0.64
+ESCALA_CARACOL = 0.58
 
 # Posicoes fixas do onibus na cena.
 ONIBUS_X = SequenciaAnimacao.ONIBUS_X
@@ -375,12 +356,26 @@ class TrabalhoComputacaoGrafica(Base):
             [0, 0.95, 0]
         )
 
-        # Rampa inclinada que liga o chao ao piso do onibus.
+        # Rampa inclinada que liga o chao ao nivel do piso interno.
+        # As extremidades ficam proximas do chao e da entrada do onibus.
         rampa = self.adicionar_peca(
-            self.onibus, BoxGeometry(1.30, 0.12, 1.15), self.material_metal,
-            [0.60, 0.48, -0.05]
+            self.onibus, BoxGeometry(1.50, 0.12, 1.42), self.material_metal,
+            [1.55, 0.50, 0]
         )
-        rampa.rotate_z(-0.75)
+        rampa.rotate_z(-0.73)
+
+        # Faixas transversais ajudam a destacar os pontos de apoio da rampa.
+        # Elas ficam ligeiramente acima da superficie para permanecer visiveis.
+        for posicao in [
+            [1.88, 0.31, 0],
+            [1.60, 0.56, 0],
+            [1.32, 0.81, 0]
+        ]:
+            faixa = self.adicionar_peca(
+                self.onibus, BoxGeometry(0.10, 0.04, 1.36),
+                self.material_cinza, posicao
+            )
+            faixa.rotate_z(-0.73)
 
         # Laterais inferiores: a entrada central permanece livre.
         for lado in [-1, 1]:

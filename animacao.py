@@ -18,14 +18,17 @@ class SequenciaAnimacao:
     # Posicoes do caracol.
     CARACOL_X_INICIAL = 3.6
     CARACOL_X_PARADA = 0.25
-    CARACOL_X_RAMPA = -1.05
+    # A rampa vai do ponto externo ate a borda do piso interno.
+    CARACOL_X_RAMPA = ONIBUS_X + 2.11
+    CARACOL_X_TOPO_RAMPA = ONIBUS_X + 0.99
     CARACOL_Y_CHAO = 0.16
     CARACOL_Y_INTERIOR = 1.15
     CARACOL_ANGULO_FORA = 3.141592653589793
     CARACOL_ANGULO_DENTRO = 1.5707963267948966
 
-    # Parte do embarque usada para chegar ate a rampa.
+    # Parte do embarque usada para chegar ate a rampa e subir por ela.
     PROGRESSO_ATE_RAMPA = 0.55
+    PROGRESSO_SUBIDA_RAMPA = 0.78
 
     # Duracao de cada parte da animacao, em segundos.
     DURACOES = {
@@ -119,22 +122,40 @@ class SequenciaAnimacao:
                 )
                 self.y_caracol = self.CARACOL_Y_CHAO
 
-            # Depois, sobe pela rampa e entra completamente na cabine.
+            # Primeiro, sobe pela rampa ate a altura do piso interno.
             else:
-                progresso_rampa = self.suavizar(
+                progresso_rampa = self.limitar_progresso(
                     (progresso - self.PROGRESSO_ATE_RAMPA)
                     / (1.0 - self.PROGRESSO_ATE_RAMPA)
                 )
-                self.x_caracol = self.interpolar(
-                    self.CARACOL_X_RAMPA,
-                    self.CARACOL_X_INTERIOR,
-                    progresso_rampa
-                )
-                self.y_caracol = self.interpolar(
-                    self.CARACOL_Y_CHAO,
-                    self.CARACOL_Y_INTERIOR,
-                    progresso_rampa
-                )
+
+                if progresso_rampa <= self.PROGRESSO_SUBIDA_RAMPA:
+                    progresso_subida = self.suavizar(
+                        progresso_rampa / self.PROGRESSO_SUBIDA_RAMPA
+                    )
+                    self.x_caracol = self.interpolar(
+                        self.CARACOL_X_RAMPA,
+                        self.CARACOL_X_TOPO_RAMPA,
+                        progresso_subida
+                    )
+                    self.y_caracol = self.interpolar(
+                        self.CARACOL_Y_CHAO,
+                        self.CARACOL_Y_INTERIOR,
+                        progresso_subida
+                    )
+                else:
+                    # Depois de atingir o piso, entra na cabine sem atravessar
+                    # a lateral do onibus em uma altura inferior a sua entrada.
+                    progresso_entrada = self.suavizar(
+                        (progresso_rampa - self.PROGRESSO_SUBIDA_RAMPA)
+                        / (1.0 - self.PROGRESSO_SUBIDA_RAMPA)
+                    )
+                    self.x_caracol = self.interpolar(
+                        self.CARACOL_X_TOPO_RAMPA,
+                        self.CARACOL_X_INTERIOR,
+                        progresso_entrada
+                    )
+                    self.y_caracol = self.CARACOL_Y_INTERIOR
 
             # O caracol vira para a frente enquanto termina de embarcar.
             self.angulo_caracol = self.interpolar(
