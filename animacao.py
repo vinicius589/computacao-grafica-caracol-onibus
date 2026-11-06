@@ -4,6 +4,10 @@
 class SequenciaAnimacao:
     """Guarda as posicoes e a etapa atual da animacao."""
 
+    # A classe separa a logica temporal da construcao grafica.
+    # Ela calcula posicoes e estados; o arquivo main.py representa esses valores
+    # por meio dos objetos tridimensionais.
+
     # Posicoes do onibus.
     ONIBUS_X = -2.3
     CARACOL_X_INTERIOR = ONIBUS_X + 0.18
@@ -37,6 +41,8 @@ class SequenciaAnimacao:
     def __init__(self):
         self.reiniciar()
 
+    # ESTADO INICIAL
+    # Este metodo define os valores necessarios para iniciar ou reiniciar a cena.
     def reiniciar(self):
         """Coloca o onibus e o caracol nas posicoes iniciais."""
         self.etapa = "aproximacao"
@@ -50,6 +56,8 @@ class SequenciaAnimacao:
         self.embarcado = False
         self.angulo_caracol = self.CARACOL_ANGULO_FORA
 
+    # FUNCOES MATEMATICAS AUXILIARES
+    # O progresso representa a parte concluida de uma etapa, variando de zero a um.
     def limitar_progresso(self, progresso):
         """Mantem o progresso entre zero e um."""
         return max(0.0, min(1.0, progresso))
@@ -71,6 +79,9 @@ class SequenciaAnimacao:
 
         return inicio + (fim - inicio) * progresso
 
+    # CALCULO DAS POSICOES
+    # Cada etapa possui uma regra de movimento. A interpolacao calcula valores
+    # intermediarios para que os objetos se desloquem gradualmente.
     def atualizar_posicoes(self):
         """Atualiza as posicoes de acordo com a etapa atual."""
         duracao = self.DURACOES[self.etapa]
@@ -149,6 +160,8 @@ class SequenciaAnimacao:
         elif self.etapa == "reiniciar":
             self.z_onibus = self.ONIBUS_Z_FINAL
 
+    # CONTROLE DAS ETAPAS
+    # Ao concluir uma etapa, este metodo seleciona a seguinte e zera seu tempo.
     def avancar_etapa(self):
         """Passa para a proxima parte da sequencia."""
         proximas_etapas = {
@@ -172,6 +185,10 @@ class SequenciaAnimacao:
         self.tempo_etapa = 0.0
         self.atualizar_posicoes()
 
+    # CONTROLE DO TEMPO
+    # delta_tempo corresponde ao intervalo entre dois quadros consecutivos.
+    # Utilizar esse valor torna a duracao dos movimentos menos dependente
+    # da quantidade de quadros por segundo produzida pelo computador.
     def atualizar(self, delta_tempo):
         """Avanca a animacao pelo tempo, sem depender do FPS."""
         if delta_tempo <= 0:
