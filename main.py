@@ -179,6 +179,13 @@ class TrabalhoComputacaoGrafica(Base):
             [0, 0.95, 0]
         )
 
+        # Rampa na porta: o caracol sobe por ela para chegar ao piso.
+        rampa = self.adicionar_peca(
+            self.onibus, BoxGeometry(1.30, 0.12, 1.15), self.material_metal,
+            [0.60, 0.48, -0.05]
+        )
+        rampa.rotate_z(-0.75)
+
         # Teto em barras: deixa a cabine visivel por cima.
         for lado in [-1, 1]:
             self.adicionar_peca(
@@ -364,11 +371,15 @@ class TrabalhoComputacaoGrafica(Base):
         self.renderer.render(self.scene, self.camera)
 
 
+# PONTO DE ENTRADA DO PROJETO
+# Para iniciar a cena, execute: python main.py
+
 def main():
-    """Ponto de entrada: inicia a aplicacao."""
+    """Cria a aplicacao e inicia o loop principal do framework."""
     aplicacao = TrabalhoComputacaoGrafica()
     aplicacao.run()
 
 
+# Esta condicao chama main() somente quando este arquivo e executado diretamente.
 if __name__ == "__main__":
     main()

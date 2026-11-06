@@ -29,9 +29,9 @@ A condição no final do arquivo faz a função main() ser executada quando main
 
 ## 4. Como o ônibus deixa o caracol visível
 
-A carroceria inferior forma o piso. A lateral de embarque é feita com colunas separadas, deixando espaços abertos entre elas. O teto também usa barras, em vez de uma placa fechada.
+A carroceria inferior forma o piso. Na porta existe uma rampa inclinada que liga o chão ao piso do ônibus. A lateral de embarque usa colunas separadas, deixando a entrada visível, e o teto usa barras para permitir a visualização da cabine.
 
-Isso permite ver o caracol atravessando a porta e depois dentro da cabine.
+O caracol primeiro caminha até a entrada. Depois sobe pela rampa, chega ao piso e fica dentro da cabine.
 
 ## 5. Por que o caracol acompanha o ônibus
 
@@ -57,7 +57,7 @@ As etapas são:
 
 1. aproximacao: o ônibus chega e espera o caracol no ponto.
 2. abrir_porta: a porta desliza e libera a entrada.
-3. embarque: o caracol atravessa a abertura e sobe para o piso da cabine.
+3. embarque: o caracol caminha até a porta e depois sobe pela rampa até o piso da cabine.
 4. espera_embarcado: o caracol já está dentro e o ônibus aguarda.
 5. fechar_porta: a porta fecha depois do embarque.
 6. partida: o ônibus sai com o caracol dentro.
@@ -100,7 +100,7 @@ Os arquivos principais são:
 ## 11. Perguntas que podem aparecer
 
 **Como sabemos que o caracol está dentro?**
-A posição dele passa pela porta e termina dentro do grupo do ônibus. Depois, fica em uma posição local fixa dentro da cabine.
+A posição dele passa pela entrada e pela rampa. Ao terminar essa etapa, fica em uma posição local fixa dentro do grupo do ônibus.
 
 **Por que o caracol acompanha o ônibus?**
 Porque ele é filho do grupo do ônibus. A transformação do pai também afeta os filhos.
